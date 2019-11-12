@@ -1,0 +1,58 @@
+{
+  "ledger": {
+    "create": {
+      "name": {
+        "label": "Name",
+        "placeholder": "Asset"
+      },
+      "type": {
+        "label": "Type of Ledger",
+        "placeholder": "Asset"
+      }
+    }
+  },
+  "account": {
+    "create": {
+      "name": {
+        "label": "Name",
+        "placeholder": "Lab Asset"
+      },
+      "ledger": {
+        "label": "Ledger",
+        "placeholder": "Ledger"
+      },
+      "startingBalance": {
+        "label": "Starting Balance",
+        "placeholder": "1000"
+      },
+      "parent": {
+        "label": "Parent",
+        "placeholder": "Asset"
+      }
+    }
+  },
+  "journal": {
+    "create": {
+      "account": {
+        "label": "Account",
+        "placeholder": "Ledger"
+      },
+      "description": {
+        "label": "Description",
+        "placeholder": "Office Tools"
+      },
+      "currency": {
+        "label": "Currency",
+        "placeholder": "IDR"
+      },
+      "debit": {
+        "label": "Debit",
+        "placeholder": "100000"
+      },
+      "credit": {
+        "label": "Credit",
+        "placeholder": "100000"
+      }
+    }
+  }
+}

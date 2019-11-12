@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    environment:
+      - NODE_ENV=development
+      - WAIT_HOSTS=postgres:5432,db_cache:6379
+    restart: always
+    command: sh -c 'yarn && /wait && yarn start:dev'
+
+  postgres:
+    ports:
+      - 5432:5432

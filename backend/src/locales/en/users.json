@@ -1,0 +1,5 @@
+{
+  "FIND_BY_USERNAME": {
+    "NOT_FOUND": "We could not not find account with username : {username}. Enter a different username please."
+  }
+}

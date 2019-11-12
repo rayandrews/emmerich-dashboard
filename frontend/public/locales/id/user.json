@@ -1,0 +1,24 @@
+{
+  "create": {
+    "username": {
+      "label": "ID Pengguna",
+      "placeholder": "ironman"
+    },
+    "email": {
+      "label": "Surat Elektronik",
+      "placeholder": "blabla@emmerich.co.id"
+    },
+    "name": {
+      "label": "Nama Lengkap",
+      "placeholder": "Tony Stark"
+    },
+    "password": {
+      "label": "Kata Sandi",
+      "placeholder": "your password"
+    },
+    "passwordConfirmation": {
+      "label": "Konfirmasi Kata Sandi",
+      "placeholder": "your password"
+    }
+  }
+}

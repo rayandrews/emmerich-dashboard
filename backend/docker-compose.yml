@@ -1,0 +1,58 @@
+version: '3'
+services:
+  nginx-admin:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - ${PORT}:8000
+    volumes:
+      - ./nginx.d:/etc/nginx/conf.d
+    depends_on:
+      - backend
+    networks:
+      - backend-network
+
+  backend:
+    build: rayandrew/emmerich-backend
+    environment:
+      - NODE_ENV=production
+      - WAIT_HOSTS=postgres:5432,db_cache:6379
+    restart: always
+    expose:
+      - 3000
+    volumes:
+      - .:/opt/backend
+      - /opt/backend/node_modules
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - backend-network
+
+  postgres:
+    image: postgres:11-alpine
+    environment:
+      - POSTGRES_USER=${TYPEORM_USERNAME}
+      - POSTGRES_PASSWORD=${TYPEORM_PASSWORD}
+      - POSTGRES_DB=${TYPEORM_DATABASE}
+    restart: always
+    expose:
+      - 5432
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    networks:
+      - backend-network
+
+  redis:
+    image: redis:alpine
+    container_name: db_cache
+    expose:
+      - 6379
+    networks:
+      - backend-network
+
+volumes:
+  postgres:
+
+networks:
+  backend-network:

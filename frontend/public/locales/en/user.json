@@ -1,0 +1,24 @@
+{
+  "create": {
+    "username": {
+      "label": "Username",
+      "placeholder": "ironman"
+    },
+    "email": {
+      "label": "Email",
+      "placeholder": "blabla@emmerich.co.id"
+    },
+    "name": {
+      "label": "Name",
+      "placeholder": "Tony Stark"
+    },
+    "password": {
+      "label": "Password",
+      "placeholder": "your password"
+    },
+    "passwordConfirmation": {
+      "label": "Password Confirmation",
+      "placeholder": "your password"
+    }
+  }
+}
