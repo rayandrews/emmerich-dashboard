@@ -1,6 +1,6 @@
 {
   "name": "@emmerich/frontend",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@nestjsx/crud-request": "^4.2.0",
