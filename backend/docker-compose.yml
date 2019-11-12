@@ -13,7 +13,7 @@ services:
       - backend-network
 
   backend:
-    build: rayandrew/emmerich-backend
+    build: .
     environment:
       - NODE_ENV=production
       - WAIT_HOSTS=postgres:5432,db_cache:6379
