@@ -127,6 +127,7 @@ export const Header: React.FunctionComponent = () => {
       handleOpenSidebar();
     }
   };
+  
 
   React.useEffect(() => {
     return () => {
@@ -136,7 +137,7 @@ export const Header: React.FunctionComponent = () => {
 
   React.useEffect(() => {
     getProfile();
-  }, [getProfile]);
+  }, [getProfile, isLoggedIn]);
 
   return (
     <Navbar light expand className={bem.b('bg-white')}>
