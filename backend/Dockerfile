@@ -10,18 +10,14 @@ RUN npm install -g yarn
 RUN mkdir -p /opt/backend
 WORKDIR /opt/backend
 
-# Use default node (non-root) user
-RUN chown node:node /opt/backend
-USER node
-
 # Install app dependencies (done before copying app source to optimize caching)
-COPY --chown=node:node package.json /opt/backend/
-COPY --chown=node:node yarn.lock /opt/backend/
+COPY package.json /opt/backend/
+COPY yarn.lock /opt/backend/
 
 RUN yarn
 
 # Copy app source to container
-COPY --chown=node:node . /opt/backend
+COPY . /opt/backend
 
 EXPOSE 3000
 
