@@ -127,7 +127,6 @@ export const Header: React.FunctionComponent = () => {
       handleOpenSidebar();
     }
   };
-  
 
   React.useEffect(() => {
     return () => {
@@ -195,11 +194,13 @@ export const Header: React.FunctionComponent = () => {
               >
                 <PopoverBody className="p-0 border-light">
                   <UserCard
-                    title={user.name}
-                    subtitle={user.email}
-                    text={`Last login : ${formatFullDate(
-                      new Date(user.lastLogin),
-                    )}`}
+                    title={user ? user.name : ''}
+                    subtitle={user ? user.email : ''}
+                    text={`Last login : ${
+                      user
+                        ? formatFullDate(new Date(user.lastLogin))
+                        : new Date()
+                    }`}
                     className="border-light"
                   >
                     <ListGroup flush>
