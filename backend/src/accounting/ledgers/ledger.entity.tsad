@@ -18,8 +18,8 @@ export class Ledger extends BaseEntity {
   @Length(3, 20)
   name: string;
 
-  @OneToMany(type => Account, account => account.ledger)
-  accounts: Account[];
+  // @OneToMany(type => Account, account => account.ledger)
+  // accounts: Account[];
 
   @Column({
     type: 'enum',

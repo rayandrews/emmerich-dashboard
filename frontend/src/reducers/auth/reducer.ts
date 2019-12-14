@@ -31,15 +31,21 @@ export const isErrorAuth = isError(actions.loginAction.failure);
 export const auth = createReducer<BaseState, Action>(initialState)
   .handleAction(
     actions.loginAction.success,
-    produce(
-      (
-        state: Draft<BaseState>,
-        action: ActionType<typeof actions.loginAction.success>,
-      ) => {
-        state.accessToken = action.payload.accessToken;
-        state.expiresIn = action.payload.expiresIn;
-      },
-    ),
+    // produce(
+    (
+      state: BaseState,
+      action: ActionType<typeof actions.loginAction.success>,
+    ) => {
+      // state.accessToken = action.payload.accessToken;
+      // state.expiresIn = action.payload.expiresIn;
+
+      return {
+        ...state,
+        accessToken: action.payload.accessToken,
+        expiresIn: action.payload.expiresIn,
+      };
+    },
+    // ),
   )
 
   .handleAction(

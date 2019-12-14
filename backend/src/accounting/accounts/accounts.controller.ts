@@ -18,9 +18,6 @@ import { AccountsService } from './accounts.service';
   },
   query: {
     join: {
-      ledger: {
-        eager: true,
-      },
       parent: {
         eager: true,
         persist: ['id'],
@@ -32,6 +29,9 @@ import { AccountsService } from './accounts.service';
         order: 'ASC',
       },
     ],
+  },
+  routes: {
+    exclude: ['createManyBase'],
   },
 })
 @Controller()
@@ -45,13 +45,19 @@ export class AccountsController implements CrudController<Account> {
   @UseGuards(AuthGuard('jwt'))
   @Override('getManyBase')
   getMany(@ParsedRequest() req: CrudRequest) {
-    return this.base.getManyBase(req);
+    return this.service.getAllAccounts(req);
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Get('/tree')
   getTrees(@ParsedRequest() req: CrudRequest) {
     return this.service.findAllAccounts();
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Override('createOneBase')
+  createOne(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Account) {
+    return this.base.createOneBase(req, dto);
   }
 
   @UseGuards(AuthGuard('jwt'))

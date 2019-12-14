@@ -9,7 +9,6 @@ import { UsersModule } from '@/users/users.module';
 
 // Accounting Module
 import { AccountingModule } from '@/accounting/accounting.module';
-import { LedgersModule } from '@/accounting/ledgers/ledgers.module';
 import { AccountsModule } from '@/accounting/accounts/accounts.module';
 import { TransactionsModule } from '@/accounting/transactions/transactions.module';
 import { JournalsModule } from '@/accounting/journals/journals.module';
@@ -27,7 +26,6 @@ export const routes: IRoutes = [
     path: '/accounting',
     module: AccountingModule,
     children: [
-      { path: '/ledgers', module: LedgersModule },
       { path: '/accounts', module: AccountsModule },
       { path: '/transactions', module: TransactionsModule },
       { path: '/journals', module: JournalsModule },

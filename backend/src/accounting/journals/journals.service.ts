@@ -98,8 +98,6 @@ export class JournalsService extends TypeOrmCrudService<Journal> {
 
     const journals = await Promise.all(promisesJournal);
 
-    console.log(journals);
-
     const transaction = new Transaction();
     transaction.transactionId = transactionId;
     transaction.journals = journals;
@@ -111,56 +109,57 @@ export class JournalsService extends TypeOrmCrudService<Journal> {
 
   private groupJournalsByTransactionId(journals: Journal[]) {
     return R.compose(
-      R.map<
-        { [index: string]: Journal[] },
-        { data: Journal[]; meta: object }
-        // any
-      >((journalsTemp: Journal[]) => {
-        const { credit, debit } = R.reduce<
-          Journal,
-          { debit: dinero.Dinero; credit: dinero.Dinero }
-        >(
-          (acc, journal) => {
-            acc[journal.type] = acc[journal.type].add(
-              dinero({
-                amount: Number(journal.amount),
-                currency: R.defaultTo('IDR')(
-                  journal.currency,
-                ) as dinero.Currency,
-                precision: R.ifElse(R.equals('IDR'), R.always(0), R.always(2))(
-                  journal.currency,
-                ),
+      R.map<{ [index: string]: Journal[] }, { data: Journal[]; meta: object }>(
+        (journalsTemp: Journal[]) => {
+          const { credit, debit } = R.reduce<
+            Journal,
+            { debit: dinero.Dinero; credit: dinero.Dinero }
+          >(
+            (acc, journal) => {
+              acc[journal.type] = acc[journal.type].add(
+                dinero({
+                  amount: Number(journal.amount),
+                  currency: R.defaultTo('IDR')(
+                    journal.currency,
+                  ) as dinero.Currency,
+                  precision: R.ifElse(
+                    R.equals('IDR'),
+                    R.always(0),
+                    R.always(2),
+                  )(journal.currency),
+                }),
+              );
+
+              return acc;
+            },
+            {
+              [TransactionType.DEBIT]: dinero({
+                amount: 0,
+                currency: 'IDR' as dinero.Currency,
+                precision: 0,
               }),
-            );
+              [TransactionType.CREDIT]: dinero({
+                amount: 0,
+                currency: 'IDR' as dinero.Currency,
+                precision: 0,
+              }),
+            },
+          )(journalsTemp);
 
-            return acc;
-          },
-          {
-            [TransactionType.DEBIT]: dinero({
-              amount: 0,
-              currency: 'IDR' as dinero.Currency,
-              precision: 0,
-            }),
-            [TransactionType.CREDIT]: dinero({
-              amount: 0,
-              currency: 'IDR' as dinero.Currency,
-              precision: 0,
-            }),
-          },
-        )(journalsTemp);
-
-        return {
-          data: journalsTemp,
-          meta: { credit: credit.toObject(), debit: debit.toObject() },
-        };
-      }),
-      R.groupBy(R.path(['transactionId'])),
+          return {
+            data: journalsTemp,
+            meta: { credit: credit.toObject(), debit: debit.toObject() },
+          };
+        },
+      ),
+      R.groupBy(R.path(['transaction', 'transactionId'])),
     )(journals);
   }
 
   public async getJournalsUsingTransactionId(req: CrudRequest) {
     return await this.journalRepository
       .createQueryBuilder('journals')
+      .innerJoinAndSelect('journals.transaction', 'transaction')
       .orderBy('journals.createdAt', 'ASC')
       .getMany()
       .then(this.groupJournalsByTransactionId);

@@ -26,8 +26,6 @@ export const App: React.FunctionComponent<AppProps> = ({
   store,
   history,
 }) => {
-  // store.dispatch(fetchCsrfAction.request()); // get csrf token
-
   return (
     <Provider store={store}>
       <PersistGate loading={<PageSpinner />} persistor={persistor}>

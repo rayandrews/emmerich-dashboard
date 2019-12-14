@@ -4,9 +4,10 @@ import { CrudRequest } from '@nestjsx/crud';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 
 import { Repository } from 'typeorm';
-import { Transactional } from 'typeorm-transactional-cls-hooked';
 
 import * as R from 'ramda';
+
+import { TransactionType } from '@/accounting/journals/journal.interface';
 
 import { Account } from './account.entity';
 
@@ -21,6 +22,42 @@ export class AccountsService extends TypeOrmCrudService<Account> {
   async findAllAccounts(): Promise<Account[]> {
     return await this.repository.manager.getTreeRepository(Account).findTrees();
     // return await this.repository.find();
+  }
+
+  async getAllAccounts(
+    req: CrudRequest,
+  ): Promise<Array<Account & { balance: string }>> {
+    const rawAccounts = await this.repository
+      .createQueryBuilder('accounts')
+      .leftJoinAndSelect('accounts.journals', 'journal')
+      .offset(req.parsed.offset)
+      .limit(req.parsed.limit)
+      .getMany();
+
+    const accounts = rawAccounts.map(account => {
+      let balance = 0;
+      if (R.not(R.or(R.isNil, R.isEmpty)(account.journals))) {
+        balance = account.journals.reduce((amount, journal) => {
+          switch (journal.type) {
+            case TransactionType.CREDIT:
+              amount -= journal.amount;
+              break;
+
+            default:
+              amount += journal.amount;
+          }
+
+          return amount;
+        }, 0);
+      }
+
+      return {
+        ...account,
+        balance: String(Number(balance)),
+      } as Account & { balance: string };
+    });
+
+    return accounts;
   }
 
   // @Transactional()

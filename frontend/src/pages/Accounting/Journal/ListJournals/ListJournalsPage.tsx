@@ -23,6 +23,7 @@ import {
 
 import { usePagination } from '@/hooks/usePagination';
 
+import { PaginationMeta } from '@/utils/actions/async';
 import { formatFullDate } from '@/utils/date';
 
 export interface ListJournalProps {}
@@ -30,7 +31,8 @@ export interface ListJournalProps {}
 export const ListJournalsPage: React.FunctionComponent<ListJournalProps> = () => {
   const dispatch = useDispatch();
   const getJournals = React.useCallback(
-    R.compose(dispatch, getJournalsAction.request),
+    (pagination: PaginationMeta) =>
+      R.compose(dispatch, getJournalsAction.request)(undefined, pagination),
     [dispatch],
   );
   const listJournalsByTransactionState = useSelector(
@@ -48,14 +50,15 @@ export const ListJournalsPage: React.FunctionComponent<ListJournalProps> = () =>
     changePage,
     // changeLimit,
   } = usePagination({
+    paginationService: getJournals,
     page: 1,
     limit: 10,
     pageCount,
   });
 
-  React.useEffect(() => {
-    getJournals(undefined, paginationState);
-  }, [getJournals, paginationState]);
+  // React.useEffect(() => {
+  //   getJournals(undefined, paginationState);
+  // }, [getJournals, paginationState]);
 
   return (
     <>

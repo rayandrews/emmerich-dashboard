@@ -1,12 +1,21 @@
 import React from 'react';
 
-interface IPagination {
+interface PaginationState {
   page: number;
   limit: number;
-  pageCount: number;
 }
 
-export const usePagination = ({ page, limit, pageCount }: IPagination) => {
+interface IPagination extends PaginationState {
+  pageCount: number;
+  paginationService: (state: PaginationState) => void;
+}
+
+export const usePagination = ({
+  paginationService,
+  page,
+  limit,
+  pageCount,
+}: IPagination) => {
   const [currentPage, setPage] = React.useState(page);
   const [currentLimit, setLimit] = React.useState(limit);
 
@@ -23,6 +32,13 @@ export const usePagination = ({ page, limit, pageCount }: IPagination) => {
     },
     [setLimit],
   );
+
+  React.useEffect(() => {
+    paginationService({
+      page: currentPage,
+      limit: currentLimit,
+    });
+  }, [paginationService, currentLimit, currentPage]);
 
   return {
     currentPage,

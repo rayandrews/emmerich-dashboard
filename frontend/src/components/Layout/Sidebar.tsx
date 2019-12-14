@@ -48,24 +48,24 @@ const navItems: INavItem[] = [
     name: 'accounting',
     Icon: MdSend,
     children: [
-      {
-        name: 'ledgers',
-        Icon: MdTextFields,
-        children: [
-          {
-            to: routes.accounting.ledger.list,
-            name: 'list ledgers',
-            exact: false,
-            Icon: MdTextFields,
-          },
-          {
-            to: routes.accounting.ledger.create,
-            name: 'create ledger',
-            exact: false,
-            Icon: MdTextFields,
-          },
-        ],
-      },
+      // {
+      //   name: 'ledgers',
+      //   Icon: MdTextFields,
+      //   children: [
+      //     {
+      //       to: routes.accounting.ledger.list,
+      //       name: 'list ledgers',
+      //       exact: false,
+      //       Icon: MdTextFields,
+      //     },
+      //     {
+      //       to: routes.accounting.ledger.create,
+      //       name: 'create ledger',
+      //       exact: false,
+      //       Icon: MdTextFields,
+      //     },
+      //   ],
+      // },
       {
         name: 'accounts',
         Icon: MdTextFields,

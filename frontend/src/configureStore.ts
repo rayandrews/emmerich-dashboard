@@ -1,6 +1,8 @@
 import { createStore, Store, applyMiddleware } from 'redux';
 import { History } from 'history';
 
+import { setAutoFreeze } from 'immer';
+
 // additional enhancers
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
@@ -15,6 +17,8 @@ import {
   createRootSaga,
 } from '@/reducers';
 
+setAutoFreeze(false);
+
 export interface ConfigureStore {
   store: Store<ApplicationState>;
   persistor: Persistor;
@@ -22,33 +26,33 @@ export interface ConfigureStore {
 
 export function configureStore(
   history: History,
-  initialState: ApplicationState,
+  initialState: ApplicationState | undefined,
 ): ConfigureStore {
   // create the composing function for our middlewares
   const composeEnhancers = composeWithDevTools({
     trace: true,
   });
-
   const sagaMiddleware = createSagaMiddleware();
 
-  const middleware = [
+  const middlewares = [
     sagaMiddleware, // saga middleware,
     routerMiddleware(history), // connected-react-router middleware
   ];
 
-  // We'll create our store with the combined reducers/sagas,
-  // and the initial Redux state that
-  // we'll be passing from our entry point.
+  if (process.env.NODE_ENV === 'development') {
+    const { logger } = require('redux-logger');
+    middlewares.push(logger);
+  }
+
   const store = createStore(
     createRootReducer(history),
     initialState,
-    composeEnhancers(applyMiddleware(...middleware)),
+    composeEnhancers(applyMiddleware(...middlewares)),
   );
 
-  // Don't forget to run the root saga, and return the store object.
-  sagaMiddleware.run(createRootSaga());
-
   const persistor = persistStore(store);
+
+  sagaMiddleware.run(createRootSaga());
 
   return { store, persistor };
 }

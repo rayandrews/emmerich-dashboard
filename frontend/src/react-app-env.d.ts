@@ -17,6 +17,10 @@ declare global {
   interface Window {
     INITIAL_REDUX_STATE: any;
   }
+
+  interface Console {
+    tron: any;
+  }
 }
 
 declare module 'dinero.js' {

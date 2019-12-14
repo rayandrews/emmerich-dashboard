@@ -44,13 +44,13 @@ const CreateAccountPage = React.lazy(() =>
 );
 
 // 3.  Ledgers
-const ListLedgersPage = React.lazy(() =>
-  import('@/pages/Accounting/Ledger/ListLedgers'),
-);
+// const ListLedgersPage = React.lazy(() =>
+//   import('@/pages/Accounting/Ledger/ListLedgers'),
+// );
 
-const CreateLedgerPage = React.lazy(() =>
-  import('@/pages/Accounting/Ledger/CreateLedger'),
-);
+// const CreateLedgerPage = React.lazy(() =>
+//   import('@/pages/Accounting/Ledger/CreateLedger'),
+// );
 // End of accounting module
 
 // const AlertPage = React.lazy(() => import('@/template-pages/AlertPage'));
@@ -115,7 +115,7 @@ export const Routes: React.FunctionComponent = () => {
             {/** added routes */}
             {/** 1. Accounting Modules */}
             {/** 1.1. Ledger Modules */}
-            <ProtectedRoute
+            {/* <ProtectedRoute
               exact
               path={routes.accounting.ledger.list}
               component={ListLedgersPage}
@@ -124,7 +124,7 @@ export const Routes: React.FunctionComponent = () => {
               exact
               path={routes.accounting.ledger.create}
               component={CreateLedgerPage}
-            />
+            /> */}
             {/** 1.2. Account Modules */}
             <ProtectedRoute
               exact
