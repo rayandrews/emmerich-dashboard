@@ -17,12 +17,16 @@
         "label": "Name",
         "placeholder": "Lab Asset"
       },
-      "ledger": {
-        "label": "Ledger",
-        "placeholder": "Ledger"
+      "type": {
+        "label": "Type",
+        "placeholder": "Asset"
       },
-      "startingBalance": {
-        "label": "Starting Balance",
+      "startingCredit": {
+        "label": "Starting Credit",
+        "placeholder": "1000"
+      },
+      "startingDebit": {
+        "label": "Starting Debit",
         "placeholder": "1000"
       },
       "parent": {

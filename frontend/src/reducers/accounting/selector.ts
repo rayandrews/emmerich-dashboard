@@ -9,7 +9,11 @@ import {
   getCreateAccount,
   getUpdateAccount,
 } from './accounts';
-import { getListOfJournals, getCreateJournal } from './journals';
+import {
+  getListOfJournals,
+  getCreateJournal,
+  getLoadingStatusCreateJournal,
+} from './journals';
 
 // 1. Ledgers Selector
 export const getAccountingLedgers = createSelector(
@@ -77,6 +81,11 @@ export const getListOfJournalsFromAccounting = R.compose(
 // 3.2. Create journal Selector
 export const getCreateJournalFromAccounting = R.compose(
   getCreateJournal,
+  getAccountingJournals,
+);
+
+export const getLoadingStatusCreateJournalFromAccounting = R.compose(
+  getLoadingStatusCreateJournal,
   getAccountingJournals,
 );
 // End of journals Selector

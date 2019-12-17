@@ -14,19 +14,19 @@ import { Account } from './account.entity';
 @Injectable()
 export class AccountsService extends TypeOrmCrudService<Account> {
   constructor(
-    @InjectRepository(Account) private readonly repository: Repository<Account>,
+    @InjectRepository(Account) private readonly repository : Repository<Account>,
   ) {
     super(repository);
   }
 
-  async findAllAccounts(): Promise<Account[]> {
+  async findAllAccounts() : Promise<Account[]> {
     return await this.repository.manager.getTreeRepository(Account).findTrees();
     // return await this.repository.find();
   }
 
   async getAllAccounts(
-    req: CrudRequest,
-  ): Promise<Array<Account & { balance: string }>> {
+    req : CrudRequest,
+  ) : Promise<Array<Account & { balance : string }>> {
     const rawAccounts = await this.repository
       .createQueryBuilder('accounts')
       .leftJoinAndSelect('accounts.journals', 'journal')
@@ -54,7 +54,7 @@ export class AccountsService extends TypeOrmCrudService<Account> {
       return {
         ...account,
         balance: String(Number(balance)),
-      } as Account & { balance: string };
+      } as Account & { balance : string };
     });
 
     return accounts;

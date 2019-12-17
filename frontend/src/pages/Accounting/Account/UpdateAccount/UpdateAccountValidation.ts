@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 
 import { AccountType } from '@/reducers/accounting/accounts';
 
-export const createAccountValidation = Yup.object().shape({
+export const updateAccountValidation = Yup.object().shape({
   name: Yup.string().required(),
   type: Yup.string()
     .oneOf(Object.values(AccountType))

@@ -1,5 +1,7 @@
 import * as dinero from 'dinero.js';
 
+import { Account } from '@/reducers/accounting/accounts';
+
 import { IErrorWithLoading } from '@/utils/reducers';
 import { PaginationResponse } from '@/utils/types';
 
@@ -10,6 +12,7 @@ export enum TransactionType {
 }
 
 export interface Journal {
+  account: Account;
   amount: string;
   memo: string | null;
   id: number;

@@ -1,6 +1,8 @@
 import { ApiModelProperty } from '@nestjs/swagger';
 import { Dinero, Currency } from 'dinero.js';
 
+import { Account } from '@/accounting/accounts/account.entity';
+
 export enum TransactionType {
   DEBIT = 'debit',
   CREDIT = 'credit',
@@ -14,19 +16,13 @@ export class JournalItemPayload {
   readonly memo: string;
 
   @ApiModelProperty()
-  readonly currency: Currency;
+  readonly currency: string;
 
   @ApiModelProperty()
   readonly amount: number;
 
   @ApiModelProperty({ enum: ['credit', 'debit'] })
   readonly type: TransactionType;
-
-  // @ApiModelProperty()
-  // readonly credit: number;
-
-  // @ApiModelProperty()
-  // readonly debit: number;
 }
 
 export interface TempJournalItem {

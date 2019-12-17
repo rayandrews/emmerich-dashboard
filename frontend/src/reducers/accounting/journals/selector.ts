@@ -30,4 +30,9 @@ export const getCreateJournal = createSelector(
   getCreateJournalState,
   R.path<ICreateJournalState>(['state']),
 );
+
+export const getLoadingStatusCreateJournal = createSelector(
+  getCreateJournalState,
+  R.path<boolean>(['loading']),
+);
 // end of create journal selector

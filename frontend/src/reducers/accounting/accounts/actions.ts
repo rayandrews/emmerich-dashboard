@@ -23,10 +23,10 @@ export const updateAccountAction = createAsyncAction(
   constants.UPDATE_ACCOUNT_REQUEST,
   constants.UPDATE_ACCOUNT_SUCCESS,
   constants.UPDATE_ACCOUNT_FAILURE,
-)<ICreateAccountPayload, ICreateAccountState, Error>();
+)<[ICreateAccountPayload, string], ICreateAccountState, Error>();
 
 export const deleteAccountAction = createAsyncAction(
-  constants.CREATE_ACCOUNT_REQUEST,
-  constants.CREATE_ACCOUNT_SUCCESS,
-  constants.CREATE_ACCOUNT_FAILURE,
-)<undefined, any, Error>();
+  constants.DELETE_ACCOUNT_REQUEST,
+  constants.DELETE_ACCOUNT_SUCCESS,
+  constants.DELETE_ACCOUNT_FAILURE,
+)<[undefined, string], any, Error>();

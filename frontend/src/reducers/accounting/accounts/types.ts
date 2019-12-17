@@ -1,10 +1,16 @@
 import * as dinero from 'dinero.js';
 
-import { Ledger } from '@/reducers/accounting/ledgers';
-
 import { IErrorWithLoading } from '@/utils/reducers';
 
 // general types
+
+export enum AccountType {
+  ASSET = 'asset',
+  LIABILITY = 'liability',
+  EQUITY = 'equity',
+  INCOME = 'income',
+  EXPENSE = 'expense',
+}
 
 export interface Account {
   id: number;
@@ -13,8 +19,9 @@ export interface Account {
   updatedAt: Date;
   currency: dinero.Currency;
   balance: string;
-  startingBalance: string;
-  ledger: Ledger;
+  startingCredit: string;
+  startingDebit: string;
+  type: AccountType;
   // children: Account[];
   parent: Account | null;
 }
@@ -31,7 +38,7 @@ export type ICreateAccountState = Partial<Account>;
 
 export interface ICreateAccountPayload {
   name: string;
-  ledger: number;
+  type: number;
   parent?: {
     id: number;
   };

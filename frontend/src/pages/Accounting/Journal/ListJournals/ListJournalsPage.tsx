@@ -1,7 +1,10 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { push } from 'connected-react-router';
+
 import {
+  Button,
   Card,
   CardBody,
   CardHeader,
@@ -9,15 +12,26 @@ import {
   Pagination,
   PaginationItem,
   PaginationLink,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
 } from 'reactstrap';
 
 import * as R from 'ramda';
 
+import * as routes from '@/config/routes';
+
 import { ApplicationState } from '@/reducers';
-import { getListOfJournalsFromAccounting } from '@/reducers/accounting';
+import {
+  getListOfJournalsFromAccounting,
+  // getLoadingStatusCreateJournalFromAccounting,
+} from '@/reducers/accounting';
 import {
   IListJournalsState,
+  // ICreateJournalState,
   getJournalsAction,
+  deleteJournalAction,
   TransactionType,
 } from '@/reducers/accounting/journals';
 
@@ -29,21 +43,57 @@ import { formatFullDate } from '@/utils/date';
 export interface ListJournalProps {}
 
 export const ListJournalsPage: React.FunctionComponent<ListJournalProps> = () => {
+  const [idDeletion, toggleDeleteModal] = React.useState(-1);
+
   const dispatch = useDispatch();
   const getJournals = React.useCallback(
     (pagination: PaginationMeta) =>
       R.compose(dispatch, getJournalsAction.request)(undefined, pagination),
     [dispatch],
   );
+
   const listJournalsByTransactionState = useSelector(
     (state: ApplicationState) =>
       getListOfJournalsFromAccounting(state.accounting),
   ) as IListJournalsState;
 
+  // const createJournalLoadingStatus = useSelector(
+  //   (state: ApplicationState) =>
+  //     getLoadingStatusCreateJournalFromAccounting(state),
+  // ) as boolean;
+
   const pageCount = React.useMemo(
     () => listJournalsByTransactionState.pageCount,
     [listJournalsByTransactionState.pageCount],
   );
+
+  const updateAction = React.useCallback(
+    (transactionId: string) => () =>
+      dispatch(
+        push(`${routes.accounting.journal.list}/update/${transactionId}`),
+      ),
+    [dispatch],
+  );
+
+  const deleteAction = React.useCallback(
+    () =>
+      R.compose(dispatch, deleteJournalAction.request)(
+        undefined,
+        String(idDeletion),
+      ),
+    [dispatch, idDeletion],
+  );
+
+  // Deletion Modal
+  const toggleModalOpen = React.useCallback(
+    (id: number) => () => {
+      toggleDeleteModal(prevState => (prevState === id ? -1 : id));
+    },
+    [toggleDeleteModal],
+  );
+  const closeModal = React.useCallback(() => toggleDeleteModal(-1), [
+    toggleDeleteModal,
+  ]);
 
   const {
     paginationState,
@@ -54,11 +104,8 @@ export const ListJournalsPage: React.FunctionComponent<ListJournalProps> = () =>
     page: 1,
     limit: 10,
     pageCount,
+    triggerRefreshOnChange: [idDeletion],
   });
-
-  // React.useEffect(() => {
-  //   getJournals(undefined, paginationState);
-  // }, [getJournals, paginationState]);
 
   return (
     <>
@@ -153,6 +200,33 @@ export const ListJournalsPage: React.FunctionComponent<ListJournalProps> = () =>
                       <p className="float-right font-weight-bold">{debit}</p>
                     </td>
                   </tr>
+                  <tr>
+                    <th colSpan={2} className="text-right">
+                      Action
+                    </th>
+                    <td>
+                      <Button
+                        size="md"
+                        color="info"
+                        className="border-0"
+                        block
+                        onClick={updateAction(transaction.transactionId)}
+                      >
+                        Edit
+                      </Button>
+                    </td>
+                    <td>
+                      <Button
+                        size="md"
+                        color="danger"
+                        className="border-0"
+                        block
+                        onClick={toggleModalOpen(transaction.id)}
+                      >
+                        Delete
+                      </Button>
+                    </td>
+                  </tr>
                 </tbody>
               </Table>
             </CardBody>
@@ -194,6 +268,20 @@ export const ListJournalsPage: React.FunctionComponent<ListJournalProps> = () =>
           />
         </PaginationItem>
       </Pagination>
+      <Modal isOpen={idDeletion > -1}>
+        <ModalHeader>Confirmation Dialog</ModalHeader>
+        <ModalBody>
+          Are you really sure to delete Transaction number : {idDeletion} ?
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" onClick={closeModal}>
+            Cancel
+          </Button>
+          <Button color="danger" onClick={deleteAction}>
+            Delete
+          </Button>
+        </ModalFooter>
+      </Modal>
     </>
   );
 };

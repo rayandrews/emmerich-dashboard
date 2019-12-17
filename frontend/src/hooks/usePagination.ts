@@ -8,6 +8,7 @@ interface PaginationState {
 interface IPagination extends PaginationState {
   pageCount: number;
   paginationService: (state: PaginationState) => void;
+  triggerRefreshOnChange?: any[];
 }
 
 export const usePagination = ({
@@ -15,6 +16,7 @@ export const usePagination = ({
   page,
   limit,
   pageCount,
+  triggerRefreshOnChange = [],
 }: IPagination) => {
   const [currentPage, setPage] = React.useState(page);
   const [currentLimit, setLimit] = React.useState(limit);
@@ -38,7 +40,7 @@ export const usePagination = ({
       page: currentPage,
       limit: currentLimit,
     });
-  }, [paginationService, currentLimit, currentPage]);
+  }, [paginationService, currentLimit, currentPage, ...triggerRefreshOnChange]);
 
   return {
     currentPage,

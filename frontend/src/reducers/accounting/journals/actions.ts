@@ -8,6 +8,7 @@ import {
   ICreateJournalPayloadArray,
   ICreateJournalResponse,
   IUpdateJournalResponse,
+  Transaction,
 } from './types';
 
 export const getJournalsAction = createAsyncPaginationAction<
@@ -26,13 +27,13 @@ export const createJournalAction = createAsyncAction(
 )<ICreateJournalPayloadArray, ICreateJournalResponse, Error>();
 
 export const updateJournalAction = createAsyncAction(
-  constants.CREATE_JOURNAL_REQUEST,
-  constants.CREATE_JOURNAL_SUCCESS,
-  constants.CREATE_JOURNAL_FAILURE,
-)<ICreateJournalPayloadArray, IUpdateJournalResponse, Error>();
+  constants.UPDATE_JOURNAL_REQUEST,
+  constants.UPDATE_JOURNAL_SUCCESS,
+  constants.UPDATE_JOURNAL_FAILURE,
+)<[Partial<Transaction>, string], IUpdateJournalResponse, Error>();
 
-// export const deleteJournalAction = createAsyncAction(
-//   constants.CREATE_JOURNAL_REQUEST,
-//   constants.CREATE_JOURNAL_SUCCESS,
-//   constants.CREATE_JOURNAL_FAILURE,
-// )<ICreateJournalPayloadArray, IUpdateJournalResponse, Error>();
+export const deleteJournalAction = createAsyncAction(
+  constants.DELETE_JOURNAL_REQUEST,
+  constants.DELETE_JOURNAL_SUCCESS,
+  constants.DELETE_JOURNAL_FAILURE,
+)<[undefined, string], IUpdateJournalResponse, Error>();

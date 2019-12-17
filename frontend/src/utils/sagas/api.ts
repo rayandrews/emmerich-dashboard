@@ -1,15 +1,18 @@
+import * as R from 'ramda';
+
 import { AxiosPromise, AxiosError } from 'axios';
 
 import { RequestQueryBuilder } from '@nestjsx/crud-request';
 
 import { call } from 'typed-redux-saga';
-import { put } from 'redux-saga/effects';
+import { put, delay } from 'redux-saga/effects';
 
 import { addNotification } from '@/reducers/app';
 
 interface ApiOptions {
-  showSuccess: boolean;
-  showFailure: boolean;
+  showSuccess?: boolean;
+  showFailure?: boolean;
+  actionCallback?: any;
 }
 
 const defaultOptions: ApiOptions = {
@@ -20,13 +23,17 @@ const defaultOptions: ApiOptions = {
 export function createApi<A, B, C extends any>(
   api: (payload: A, meta: string) => AxiosPromise<B>,
   actions: C,
-  options = defaultOptions,
+  options: ApiOptions = defaultOptions,
 ) {
   return function*(request: ReturnType<C['request']> | any) {
     try {
-      const meta: string = request.meta
-        ? RequestQueryBuilder.create(request.meta).query()
-        : '';
+      let meta = request.meta;
+
+      if (!R.is(String, request.meta)) {
+        meta = request.meta
+          ? RequestQueryBuilder.create(request.meta).query()
+          : '';
+      }
 
       const response = yield* call(api, request.payload, meta);
       yield put(actions.success(response.data));
@@ -37,6 +44,11 @@ export function createApi<A, B, C extends any>(
             level: 'success',
           }),
         );
+      }
+
+      if (options.actionCallback) {
+        yield delay(500);
+        yield put(options.actionCallback);
       }
     } catch (_err) {
       const err = _err as AxiosError;

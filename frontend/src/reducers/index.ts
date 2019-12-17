@@ -1,13 +1,7 @@
 import { combineReducers, Reducer } from 'redux';
 import { fork } from 'redux-saga/effects';
 
-import {
-  persistReducer,
-  persistCombineReducers,
-  PersistState,
-  PersistConfig,
-} from 'redux-persist';
-import hardSet from 'redux-persist/lib/stateReconciler/hardSet';
+import { persistReducer, PersistConfig } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
 import { History } from 'history';
@@ -50,7 +44,7 @@ const rootPersistConfig: PersistConfig<ApplicationState> = {
   debug: true,
   storage,
   // stateReconciler: hardSet,
-  blacklist: ['app', 'auth'],
+  blacklist: ['app', 'auth', 'accounting', 'user'],
 };
 
 const authPersistConfig: PersistConfig<auth.State> = {
@@ -79,7 +73,8 @@ export function createRootReducer(
 
   return (state: _ApplicationState, action: Action) => {
     if (action.type === auth.USER_LOGOUT) {
-      storage.removeItem('persist:root');
+      storage.removeItem('root');
+      storage.removeItem('auth');
       state = undefined;
     }
 

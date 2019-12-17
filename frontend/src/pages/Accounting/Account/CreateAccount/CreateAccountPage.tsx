@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux';
 
 import * as R from 'ramda';
 
-import { getLedgersAction } from '@/reducers/accounting/ledgers';
 import { getAccountsAction } from '@/reducers/accounting/accounts';
 
 import { CreateAccountForm } from './CreateAccountForm';
@@ -18,24 +17,11 @@ export const CreateAccountPage: React.FunctionComponent<CreateAccountPageProps> 
     [dispatch],
   );
 
-  const getLedger = React.useCallback(
-    R.compose(dispatch, getLedgersAction.request),
-    [dispatch],
-  );
-
   React.useEffect(() => {
     getAccounts('');
   }, [getAccounts]);
 
-  React.useEffect(() => {
-    getLedger();
-  }, [getLedger]);
-
-  return (
-    <>
-      <CreateAccountForm />
-    </>
-  );
+  return <CreateAccountForm />;
 };
 
 export default CreateAccountPage;

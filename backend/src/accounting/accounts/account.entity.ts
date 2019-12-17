@@ -11,7 +11,7 @@ import { Length } from 'class-validator';
 import { BaseEntity } from '@/shared/entity/base.entity';
 import { Journal } from '@/accounting/journals/journal.entity';
 
-export enum LedgerType {
+export enum AccountType {
   ASSET = 'asset',
   LIABILITY = 'liability',
   EQUITY = 'equity',
@@ -24,39 +24,39 @@ export enum LedgerType {
 export class Account extends BaseEntity {
   @Column()
   @Length(3, 20)
-  name!: string;
+  name! : string;
 
   @Column({
     type: 'bigint',
   })
-  startingCredit: string = '0';
+  startingCredit : string = '0';
 
   @Column({
     type: 'bigint',
   })
-  startingDebit: string = '0';
+  startingDebit : string = '0';
 
   @Column()
   @Length(5)
-  currency: string = 'IDR';
+  currency : string = 'IDR';
 
   @TreeParent()
-  parent: Account;
+  parent : Account;
 
   @TreeChildren()
-  children: Account[];
+  children : Account[];
 
   @Column({
     type: 'enum',
-    enum: LedgerType,
-    default: LedgerType.ASSET,
+    enum: AccountType,
+    default: AccountType.ASSET,
   })
-  type: LedgerType;
+  type : AccountType;
 
   @OneToMany(type => Journal, journal => journal.account, {
     eager: true,
   })
-  journals: Journal[];
+  journals : Journal[];
 
   // getBalance(currency: dinero.Currency = 'IDR') {
   //   return dinero({

@@ -13,8 +13,9 @@ import { ApplicationState } from '@/reducers';
 import { getListOfAccountsFromAccounting } from '@/reducers/accounting';
 
 import {
+  Account,
   IListAccountsState,
-  createAccountAction,
+  updateAccountAction,
   AccountType,
 } from '@/reducers/accounting/accounts';
 
@@ -22,12 +23,15 @@ import { capitalize } from '@/utils/string';
 
 import { FormInput } from '@/components/Form';
 
-import { createAccountValidation } from './CreateAccountValidation';
+import { updateAccountValidation } from './UpdateAccountValidation';
 
-export interface CreateAccountFormProps {}
+export interface UpdateAccountFormProps {
+  account: Account;
+}
 
-export const CreateAccountForm: React.FunctionComponent<CreateAccountFormProps> = ({
+export const UpdateAccountForm: React.FunctionComponent<UpdateAccountFormProps> = ({
   children,
+  account,
 }) => {
   const dispatch = useDispatch();
   const { t } = useTranslation('accounting');
@@ -36,30 +40,38 @@ export const CreateAccountForm: React.FunctionComponent<CreateAccountFormProps> 
     getListOfAccountsFromAccounting(state.accounting),
   ) as IListAccountsState;
 
-  const listAccounts = [{ id: '', name: 'No Parent' }, ...listAccountsFetched];
+  const listAccounts = [
+    { id: '', name: 'No Parent' },
+    ...listAccountsFetched.filter(_account => _account.id === account.id),
+  ];
+
+  const parentValue = account.parent ? String(account.parent.id) : '';
 
   const formContext = useForm({
-    validationSchema: createAccountValidation,
+    validationSchema: updateAccountValidation,
     defaultValues: {
-      parent: '',
+      ...account,
+      parent: parentValue,
     },
   });
 
-  const watchParent = formContext.watch('parent', '' as any);
+  const watchParent = formContext.watch('parent');
 
   const onSubmit = _data => {
     if (!_data) return;
 
     const { parent, ...rest } = _data;
     dispatch(
-      createAccountAction.request({
-        ...rest,
-        parent: {
-          id: R.isEmpty(parent) ? undefined : Number(parent),
+      updateAccountAction.request(
+        {
+          ...rest,
+          parent: {
+            id: R.isEmpty(parent) ? undefined : Number(parent),
+          },
         },
-      }),
+        String(account.id),
+      ),
     );
-    // dispatch(push('/'));
   };
 
   return (
@@ -95,26 +107,12 @@ export const CreateAccountForm: React.FunctionComponent<CreateAccountFormProps> 
             </option>
           ))}
         </FormInput>
-        {/* <FormInput
-          name="parent"
-          type="number"
-          label={t('account.create.parent.label')}
-          placeholder={t('account.create.parent.placeholder')}
-          defaultValue={watchParent}
-        /> */}
         <FormInput
           type="select"
           name="parent"
           label={t('account.create.parent.label')}
           placeholder={t('account.create.parent.placeholder')}
           value={watchParent}
-          // value={watchCurrency}
-          // onChange={event =>
-          //   formContext.setValue(
-          //     'currency',
-          //     event.target.value,
-          //   )
-          // }
         >
           {listAccounts.map(account => (
             <option key={`${account.id} - ${account.name}`} value={account.id}>
@@ -129,7 +127,7 @@ export const CreateAccountForm: React.FunctionComponent<CreateAccountFormProps> 
           block
           onClick={formContext.handleSubmit(onSubmit)}
         >
-          Create Account
+          Update Account
         </Button>
         {children}
       </Form>

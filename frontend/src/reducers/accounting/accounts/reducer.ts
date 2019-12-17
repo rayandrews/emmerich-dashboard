@@ -28,9 +28,7 @@ const listAccounts = createReducer<IListAccountsState, Action>(
     (
       state: Draft<IListAccountsState>,
       action: ActionType<typeof actions.getAccountsAction.success>,
-    ) => {
-      return action.payload;
-    },
+    ) => action.payload,
   ),
 );
 const listAccountsReducer = combineReducers({
@@ -76,9 +74,7 @@ const updateAccount = createReducer<IUpdateAccountState, Action>(
     (
       state: Draft<IUpdateAccountState>,
       action: ActionType<typeof actions.updateAccountAction.success>,
-    ) => {
-      return action.payload;
-    },
+    ) => action.payload,
   ),
 );
 const updateAccountReducer = combineReducers({

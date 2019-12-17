@@ -18,12 +18,15 @@ export const createAccountService = (payload: ICreateAccountPayload) =>
     ICreateAccountResponse
   >;
 
-export const updateAccountService = (payload: IUpdateAccountPayload) =>
-  request.patch('/accounting/accounts', payload) as AxiosPromise<
-    IUpdateAccountResponse
-  >;
+export const updateAccountService = (
+  payload: IUpdateAccountPayload,
+  id: string,
+) => {
+  return request.patch(
+    `/accounting/accounts/${!id ? '' : id}`,
+    payload,
+  ) as AxiosPromise<IUpdateAccountResponse>;
+};
 
-// export const deleteAccountService = () =>
-//   request.delete('/accounting/accounts') as AxiosPromise<
-//     IDel
-//   >;
+export const deleteAccountService = (_, id: string) =>
+  request.delete(`/accounting/accounts/${!id ? '' : id}`) as AxiosPromise;
