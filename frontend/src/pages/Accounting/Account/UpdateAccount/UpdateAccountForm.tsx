@@ -4,7 +4,7 @@ import * as R from 'ramda';
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import useForm, { FormContext } from 'react-hook-form';
+import { useForm, FormContext } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { Button, Form } from 'reactstrap';
@@ -42,7 +42,7 @@ export const UpdateAccountForm: React.FunctionComponent<UpdateAccountFormProps> 
 
   const listAccounts = [
     { id: '', name: 'No Parent' },
-    ...listAccountsFetched.filter(_account => _account.id === account.id),
+    ...listAccountsFetched.data.filter(_account => _account.id === account.id),
   ];
 
   const parentValue = account.parent ? String(account.parent.id) : '';
@@ -50,14 +50,17 @@ export const UpdateAccountForm: React.FunctionComponent<UpdateAccountFormProps> 
   const formContext = useForm({
     validationSchema: updateAccountValidation,
     defaultValues: {
-      ...account,
+      name: account.name,
+      type: account.type,
+      startingDebit: account.startingDebit,
+      startingCredit: account.startingCredit,
       parent: parentValue,
     },
   });
 
-  const watchParent = formContext.watch('parent');
+  const watchParent = formContext.watch('parent') as string;
 
-  const onSubmit = _data => {
+  const onSubmit = (_data: any) => {
     if (!_data) return;
 
     const { parent, ...rest } = _data;
@@ -80,26 +83,26 @@ export const UpdateAccountForm: React.FunctionComponent<UpdateAccountFormProps> 
         <FormInput
           name="name"
           type="text"
-          label={t('account.create.name.label')}
-          placeholder={t('account.create.name.placeholder')}
+          label={t('account.name.label')}
+          placeholder={t('account.name.placeholder')}
         />
         <FormInput
           name="startingDebit"
           type="number"
-          label={t('account.create.startingDebit.label')}
-          placeholder={t('account.create.startingDebit.placeholder')}
+          label={t('account.startingDebit.label')}
+          placeholder={t('account.startingDebit.placeholder')}
         />
         <FormInput
           name="startingCredit"
           type="number"
-          label={t('account.create.startingCredit.label')}
-          placeholder={t('account.create.startingCredit.placeholder')}
+          label={t('account.startingCredit.label')}
+          placeholder={t('account.startingCredit.placeholder')}
         />
         <FormInput
           name="type"
           type="select"
-          label={t('account.create.type.label')}
-          placeholder={t('account.create.type.placeholder')}
+          label={t('account.type.label')}
+          placeholder={t('account.type.placeholder')}
         >
           {Object.values(AccountType).map((accountType, idx) => (
             <option key={accountType} value={accountType}>
@@ -110,8 +113,8 @@ export const UpdateAccountForm: React.FunctionComponent<UpdateAccountFormProps> 
         <FormInput
           type="select"
           name="parent"
-          label={t('account.create.parent.label')}
-          placeholder={t('account.create.parent.placeholder')}
+          label={t('account.parent.label')}
+          placeholder={t('account.parent.placeholder')}
           value={watchParent}
         >
           {listAccounts.map(account => (

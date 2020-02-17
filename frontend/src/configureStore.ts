@@ -1,7 +1,7 @@
 import { createStore, Store, applyMiddleware } from 'redux';
 import { History } from 'history';
 
-import { setAutoFreeze } from 'immer';
+// import { setAutoFreeze } from 'immer';
 
 // additional enhancers
 import { composeWithDevTools } from 'redux-devtools-extension';
@@ -17,7 +17,7 @@ import {
   createRootSaga,
 } from '@/reducers';
 
-setAutoFreeze(false);
+// setAutoFreeze(false);
 
 export interface ConfigureStore {
   store: Store<ApplicationState>;

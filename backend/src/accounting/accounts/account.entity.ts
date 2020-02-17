@@ -24,39 +24,39 @@ export enum AccountType {
 export class Account extends BaseEntity {
   @Column()
   @Length(3, 20)
-  name! : string;
+  name!: string;
 
   @Column({
     type: 'bigint',
   })
-  startingCredit : string = '0';
+  startingCredit: string = '0';
 
   @Column({
     type: 'bigint',
   })
-  startingDebit : string = '0';
+  startingDebit: string = '0';
 
   @Column()
   @Length(5)
-  currency : string = 'IDR';
+  currency: string = 'IDR';
 
   @TreeParent()
-  parent : Account;
+  parent: Account;
 
   @TreeChildren()
-  children : Account[];
+  children: Account[];
 
   @Column({
     type: 'enum',
     enum: AccountType,
     default: AccountType.ASSET,
   })
-  type : AccountType;
+  type: AccountType;
 
   @OneToMany(type => Journal, journal => journal.account, {
-    eager: true,
+    eager: false,
   })
-  journals : Journal[];
+  journals: Journal[];
 
   // getBalance(currency: dinero.Currency = 'IDR') {
   //   return dinero({

@@ -1,26 +1,24 @@
 {
   "journal": {
-    "create": {
-      "account": {
-        "label": "Akun",
-        "placeholder": "Ledger"
-      },
-      "description": {
-        "label": "Deskripsi",
-        "placeholder": "Alat-alat Kantor"
-      },
-      "currency": {
-        "label": "Mata Uang",
-        "placeholder": "IDR"
-      },
-      "debit": {
-        "label": "Debit",
-        "placeholder": "100000"
-      },
-      "credit": {
-        "label": "Credit",
-        "placeholder": "100000"
-      }
+    "account": {
+      "label": "Akun",
+      "placeholder": "Ledger"
+    },
+    "description": {
+      "label": "Deskripsi",
+      "placeholder": "Alat-alat Kantor"
+    },
+    "currency": {
+      "label": "Mata Uang",
+      "placeholder": "IDR"
+    },
+    "debit": {
+      "label": "Debit",
+      "placeholder": "100000"
+    },
+    "credit": {
+      "label": "Credit",
+      "placeholder": "100000"
     }
   }
 }

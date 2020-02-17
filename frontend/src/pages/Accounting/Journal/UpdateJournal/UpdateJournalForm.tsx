@@ -2,10 +2,10 @@ import React from 'react';
 
 import * as R from 'ramda';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { push } from 'connected-react-router';
 
-import useForm, { FormContext } from 'react-hook-form';
+import { useForm, Controller, FormContext } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -16,7 +16,6 @@ import {
   CardHeader,
   CardFooter,
   Col,
-  Container,
   Form,
   Row,
   Table,
@@ -26,16 +25,16 @@ import { MdClose } from 'react-icons/md';
 import { default as siteConfig } from '@/config/site';
 import * as routes from '@/config/routes';
 
-import { FormInput } from '@/components/Form';
+import { FormInput, AsyncSelect } from '@/components/Form';
 
-import { ApplicationState } from '@/reducers';
-import { getListOfAccountsFromAccounting } from '@/reducers/accounting';
+import { useSearch } from '@/hooks/useSearch';
+
 import {
   updateJournalAction,
   Transaction,
   TransactionType,
 } from '@/reducers/accounting/journals';
-import { IListAccountsState } from '@/reducers/accounting/accounts';
+import { Account, listAccountsService } from '@/reducers/accounting/accounts';
 
 import { updateJournalValidation } from './UpdateJournalValidation';
 
@@ -47,15 +46,14 @@ export const UpdateJournalForm: React.FunctionComponent<UpdateJournalFormProps> 
   children,
   transaction,
 }) => {
+  const dispatch = useDispatch();
+  const { t } = useTranslation('accounting');
+
   const addMoreRef = React.useRef<HTMLButtonElement>(null);
   const [indexes, setIndexes] = React.useState<number[]>(
     R.range(0, transaction.journals.length),
   );
   const [counter, setCounter] = React.useState(transaction.journals.length);
-
-  const listAccounts = useSelector((state: ApplicationState) =>
-    getListOfAccountsFromAccounting(state.accounting),
-  ) as IListAccountsState;
 
   const defaultAmount = !transaction.journals[0]
     ? 0
@@ -64,8 +62,10 @@ export const UpdateJournalForm: React.FunctionComponent<UpdateJournalFormProps> 
   const creditRef = React.useRef<number>(defaultAmount);
   const debitRef = React.useRef<number>(defaultAmount);
 
-  const dispatch = useDispatch();
-  const { t } = useTranslation('accounting');
+  const { setInputText, search } = useSearch({
+    field: 'name',
+    service: listAccountsService,
+  });
 
   const formContext = useForm({
     validationSchema: updateJournalValidation,
@@ -78,16 +78,59 @@ export const UpdateJournalForm: React.FunctionComponent<UpdateJournalFormProps> 
         debit:
           journal.type === TransactionType.DEBIT ? Number(journal.amount) : 0,
       })),
-    },
+    } as any,
   });
 
-  const watchEntries = formContext.watch('entries');
+  const watchEntries = formContext.watch('entries') as any[];
 
-  const onSubmit = _data => {
+  const searchAccount = (inputValue: string) => {
+    setInputText(inputValue);
+
+    return new Promise(resolve => {
+      if (R.is(Array, search.result)) {
+        resolve(
+          (search.result as Account[]).map(account => ({
+            value: String(account.id),
+            label: account.name,
+          })),
+        );
+      } else {
+        resolve([]);
+        // resolve(transaction.journals.map(journal => {
+        //   return {
+        //     value: String(journal.account.id),
+        //     label: journal.account.name,
+        //   };
+        // }));
+      }
+    });
+  };
+
+  const getAccountFromEntries = (index: number) => {
+    if (!watchEntries || !watchEntries[index] || !watchEntries[index].account)
+      return {};
+
+    if (!!watchEntries[index].account.id) {
+      return {
+        value: String(watchEntries[index].account.id),
+        label: watchEntries[index].account.name,
+      };
+    }
+
+    return watchEntries[index].account;
+  };
+
+  const onSubmit = (_data: any) => {
     const data = {
       ..._data,
-      journals: _data.entries.map(entry => ({
-        account: entry.account,
+      transactionId: transaction.transactionId,
+      journals: _data.entries.map((entry: any) => ({
+        id: Number(entry.id),
+        account: {
+          id: !!entry.account.value
+            ? Number(entry.account.value)
+            : entry.account.id,
+        },
         currency: siteConfig.currency,
         amount: entry.debit !== 0 ? entry.debit : entry.credit,
         type:
@@ -107,7 +150,7 @@ export const UpdateJournalForm: React.FunctionComponent<UpdateJournalFormProps> 
     setCounter(prevCounter => prevCounter + 1);
   };
 
-  const removeEntry = index => () => {
+  const removeEntry = (index: number) => () => {
     setIndexes(prevIndexes => [...prevIndexes.filter(item => item !== index)]);
   };
 
@@ -146,7 +189,7 @@ export const UpdateJournalForm: React.FunctionComponent<UpdateJournalFormProps> 
     // <Container>
     <FormContext {...formContext}>
       <Form onSubmit={formContext.handleSubmit(onSubmit)}>
-        <Card className="my-3">
+        <Card className="my-4">
           <CardHeader>
             <b>
               Transaction ID{' '}
@@ -167,16 +210,12 @@ export const UpdateJournalForm: React.FunctionComponent<UpdateJournalFormProps> 
             <Table responsive striped>
               <thead>
                 <tr>
-                  <th className="text-center">
-                    {t('journal.create.account.label')}
+                  <th className="text-center" colSpan={2}>
+                    {t('journal.account.label')}
                   </th>
-                  <th>{t('journal.create.description.label')}</th>
-                  <th className="text-center">
-                    {t('journal.create.credit.label')}
-                  </th>
-                  <th className="text-center">
-                    {t('journal.create.debit.label')}
-                  </th>
+                  <th>{t('journal.description.label')}</th>
+                  <th className="text-center">{t('journal.debit.label')}</th>
+                  <th className="text-center">{t('journal.credit.label')}</th>
                   <th></th>
                 </tr>
               </thead>
@@ -187,7 +226,7 @@ export const UpdateJournalForm: React.FunctionComponent<UpdateJournalFormProps> 
                     <React.Fragment key={fieldName}>
                       {formContext.errors[fieldName] ? (
                         <tr>
-                          <td colSpan={5}>
+                          <td colSpan={6}>
                             <Alert color="danger" key={fieldName}>
                               [Entries no. {index + 1}] -{' '}
                               {(formContext.errors[fieldName] as any).message}
@@ -196,42 +235,66 @@ export const UpdateJournalForm: React.FunctionComponent<UpdateJournalFormProps> 
                         </tr>
                       ) : null}
                       <tr>
-                        <td>
-                          <FormInput
+                        <td colSpan={2}>
+                          <FormInput type="hidden" name={`${fieldName}.id`} />
+                          <Controller
+                            name={`${fieldName}.account`}
+                            as={
+                              <AsyncSelect
+                                name={`${fieldName}.account-container`}
+                                Classname="basic-single"
+                                classNamePrefix="select"
+                                // label={t('journal.account.label')}
+                                placeholder={t('journal.account.placeholder')}
+                                isSearchable
+                                isLoading={search.loading}
+                                loadOptions={searchAccount}
+                                cacheOptions
+                                defaultOptions
+                                onInputChange={setInputText}
+                                value={getAccountFromEntries(index)}
+                              />
+                            }
+                            valueName={`${fieldName}.account`}
+                            control={formContext.control}
+                            rules={{ required: true }}
+                            onChange={([selected]) => {
+                              return { value: selected };
+                            }}
+                          />
+                          {/* <FormInput
                             type="select"
                             name={`${fieldName}.account.id`}
                             placeholder={t(
-                              'journal.create.account.placeholder',
+                              'journal.account.placeholder',
                             )}
                           >
-                            {listAccounts.map(account => (
+                            {listAccounts.data.map(account => (
                               <option key={account.id} value={account.id}>
                                 {account.name}
                               </option>
                             ))}
-                          </FormInput>
+                            </FormInput> */}
                         </td>
                         <td>
                           <FormInput
                             type="text"
                             name={`${fieldName}.memo`}
-                            placeholder={t(
-                              'journal.create.description.placeholder',
-                            )}
-                          />
-                        </td>
-                        <td>
-                          <FormInput
-                            type="number"
-                            name={`${fieldName}.credit`}
-                            placeholder={t('journal.create.credit.placeholder')}
+                            placeholder={t('journal.description.placeholder')}
                           />
                         </td>
                         <td>
                           <FormInput
                             type="number"
                             name={`${fieldName}.debit`}
-                            placeholder={t('journal.create.debit.placeholder')}
+                            placeholder={t('journal.debit.placeholder')}
+                          />
+                        </td>
+                        <td>
+                          <FormInput
+                            type="number"
+                            name={`${fieldName}.credit`}
+                            placeholder={t('journal.credit.placeholder')}
                           />
                         </td>
                         <td className="align-items-center">
@@ -255,7 +318,9 @@ export const UpdateJournalForm: React.FunctionComponent<UpdateJournalFormProps> 
                       Add More
                     </Button>
                   </th>
-                  <td className="text-right">Total</td>
+                  <td className="text-right" colSpan={2}>
+                    Total
+                  </td>
                   <td>
                     <p className="float-left">{siteConfig.currency}</p>
                     <p className="float-right">{creditRef.current}</p>

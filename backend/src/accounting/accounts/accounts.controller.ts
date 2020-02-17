@@ -45,19 +45,19 @@ export class AccountsController implements CrudController<Account> {
   @UseGuards(AuthGuard('jwt'))
   @Override('getManyBase')
   getMany(@ParsedRequest() req: CrudRequest) {
-    return this.base.getManyBase(req);
+    return this.service.findAll(req);
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('/tree')
+  @Get('/parent')
   getTrees(@ParsedRequest() req: CrudRequest) {
-    return this.service.findAllAccounts();
+    return this.service.findParents(req);
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Override('getOneBase')
   getOne(@ParsedRequest() req: CrudRequest) {
-    return this.base.getOneBase(req);
+    return this.service.findOneAccount(req);
   }
 
   @UseGuards(AuthGuard('jwt'))

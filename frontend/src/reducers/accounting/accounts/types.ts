@@ -1,6 +1,7 @@
 import * as dinero from 'dinero.js';
 
 import { IErrorWithLoading } from '@/utils/reducers';
+import { PaginationResponse } from '@/utils/types';
 
 // general types
 
@@ -18,17 +19,17 @@ export interface Account {
   createdAt: Date;
   updatedAt: Date;
   currency: dinero.Currency;
-  balance: string;
   startingCredit: string;
   startingDebit: string;
   type: AccountType;
-  // children: Account[];
   parent: Account | null;
+  balance: string | undefined;
+  children: Account[] | undefined;
 }
 // end of general types
 
-// 1. List of journals
-export type IListAccountsState = Account[];
+// 1. List of accounts
+export type IListAccountsState = PaginationResponse<Account>;
 
 export type IListAccountResponse = IListAccountsState;
 // End of List of Accounts

@@ -2,8 +2,6 @@ import * as Yup from 'yup';
 
 import * as R from 'ramda';
 
-import { Account } from '@/reducers/accounting/accounts';
-
 interface IJournalPayload {
   account: {
     id: number;

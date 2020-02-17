@@ -5,9 +5,7 @@ import { createBrowserHistory } from 'history';
 import { App } from '@/App';
 import * as serviceWorker from '@/serviceWorker';
 import { configureStore } from '@/configureStore';
-import { ApplicationState } from '@/reducers';
 import { initializeRequest } from '@/utils/request';
-import { loadState } from '@/utils/persist';
 import '@/utils/i18n';
 
 // configuring store
@@ -24,7 +22,7 @@ const history = createBrowserHistory({
 const { store, persistor } = configureStore(history);
 initializeRequest(store);
 
-const render = Component => {
+const render = (Component: any) => {
   return ReactDOM.render(Component, document.getElementById('root'));
 };
 

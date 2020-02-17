@@ -16,7 +16,6 @@ import { Journal } from '@/accounting/journals/journal.entity';
 import {
   TransactionType,
   JournalItemPayload,
-  TempJournalItem,
 } from '@/accounting/journals/journal.interface';
 
 import { Transaction } from './transaction.entity';
@@ -113,8 +112,6 @@ export class TransactionsService extends TypeOrmCrudService<Transaction> {
   public async updateTransaction(req: CrudRequest, transaction: Transaction) {
     const promises = [];
 
-    console.log(transaction);
-
     promises.push(this.transactionRepository.update(req.options.params.id as number, R.omit(['journals', 'createdAt', 'updatedAt'], transaction)));
 
     if (!R.isNil(transaction.journals) && !R.isEmpty(transaction.journals)) {
@@ -130,6 +127,8 @@ export class TransactionsService extends TypeOrmCrudService<Transaction> {
     await Promise.all(promises);
 
     const updatedTransaction = await this.transactionRepository.findOne(req.options.params.id as number);
+
+    console.log(updatedTransaction);
 
     return updatedTransaction;
   }

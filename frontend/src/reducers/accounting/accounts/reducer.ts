@@ -1,9 +1,12 @@
 import { combineReducers, Reducer } from 'redux';
 import { createReducer, ActionType } from 'typesafe-actions';
 
+import * as R from 'ramda';
+
 import produce, { Draft } from 'immer';
 
 import { isLoading, isError } from '@/utils/reducers';
+import { createDefaultPaginationState } from '@/utils/types';
 
 import {
   State,
@@ -17,20 +20,46 @@ export type Action = ActionType<typeof actions>;
 
 // Modules
 // 1. List all accounts
-const listAccountsInitialState: IListAccountsState = [];
+const listAccountsInitialState: IListAccountsState = createDefaultPaginationState();
 const isLoadingListAccounts = isLoading(actions.getAccountsAction);
 const isErrorListAccounts = isError(actions.getAccountsAction.failure);
 const listAccounts = createReducer<IListAccountsState, Action>(
   listAccountsInitialState,
-).handleAction(
-  actions.getAccountsAction.success,
-  produce(
-    (
-      state: Draft<IListAccountsState>,
-      action: ActionType<typeof actions.getAccountsAction.success>,
-    ) => action.payload,
-  ),
-);
+)
+  .handleAction(
+    actions.getAccountsAction.success,
+    produce(
+      (
+        state: Draft<IListAccountsState>,
+        action: ActionType<typeof actions.getAccountsAction.success>,
+      ) => action.payload,
+    ),
+  )
+  .handleAction(
+    actions.getSpecificAccountAction.success,
+    produce(
+      (
+        state: Draft<IListAccountsState>,
+        action: ActionType<typeof actions.getSpecificAccountAction.success>,
+      ) => {
+        const accountIdx = state.data.findIndex(
+          account => account.id === Number(action.payload.id),
+        );
+
+        if (accountIdx > -1) {
+          state[accountIdx] = action.payload as any;
+
+          if (!R.isNil(action.payload.children)) {
+            const children = action.payload.children.map(child => {
+              (child as any).parent = state[accountIdx].id;
+              return child;
+            });
+            state[accountIdx].children = children;
+          }
+        }
+      },
+    ),
+  );
 const listAccountsReducer = combineReducers({
   loading: isLoadingListAccounts,
   state: listAccounts,

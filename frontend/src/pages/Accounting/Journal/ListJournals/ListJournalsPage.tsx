@@ -37,7 +37,7 @@ import {
 
 import { usePagination } from '@/hooks/usePagination';
 
-import { PaginationMeta } from '@/utils/actions/async';
+import { ApiMeta } from '@/utils/actions/async';
 import { formatFullDate } from '@/utils/date';
 
 export interface ListJournalProps {}
@@ -47,7 +47,7 @@ export const ListJournalsPage: React.FunctionComponent<ListJournalProps> = () =>
 
   const dispatch = useDispatch();
   const getJournals = React.useCallback(
-    (pagination: PaginationMeta) =>
+    (pagination: ApiMeta) =>
       R.compose(dispatch, getJournalsAction.request)(undefined, pagination),
     [dispatch],
   );
@@ -155,6 +155,7 @@ export const ListJournalsPage: React.FunctionComponent<ListJournalProps> = () =>
                 <thead>
                   <tr>
                     <th className="text-center">#</th>
+                    <th>Account</th>
                     <th>Description</th>
                     <th className="text-center">Debit</th>
                     <th className="text-center">Credit</th>
@@ -167,11 +168,12 @@ export const ListJournalsPage: React.FunctionComponent<ListJournalProps> = () =>
                     return (
                       <tr key={item.id}>
                         <th scope="row">{idx}</th>
+                        <td>{item.account.name}</td>
                         <td>{item.memo}</td>
                         <td className="d-flex justify-content-between">
                           <p>{item.currency}</p>
                           <p>
-                            {item.type === TransactionType.CREDIT
+                            {item.type === TransactionType.DEBIT
                               ? transactionAmount
                               : 0}
                           </p>
@@ -179,7 +181,7 @@ export const ListJournalsPage: React.FunctionComponent<ListJournalProps> = () =>
                         <td>
                           <p className="float-left">{item.currency}</p>
                           <p className="float-right">
-                            {item.type === TransactionType.DEBIT
+                            {item.type === TransactionType.CREDIT
                               ? transactionAmount
                               : 0}
                           </p>
@@ -188,7 +190,7 @@ export const ListJournalsPage: React.FunctionComponent<ListJournalProps> = () =>
                     );
                   })}
                   <tr>
-                    <th colSpan={2} className="text-right">
+                    <th colSpan={3} className="text-right">
                       Total
                     </th>
                     <td>

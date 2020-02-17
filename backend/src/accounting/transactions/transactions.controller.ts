@@ -8,7 +8,7 @@ import {
   ParsedBody,
 } from '@nestjsx/crud';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiUseTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 
 import { JournalItemPayload } from '@/accounting/journals/journal.interface';
 
@@ -37,7 +37,7 @@ import { TransactionsService } from './transactions.service';
     },
   },
 })
-@ApiUseTags('journals')
+@ApiTags('journals')
 @Controller()
 export class TransactionsController implements CrudController<Transaction> {
   constructor(public readonly service: TransactionsService) { }

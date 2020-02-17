@@ -10,7 +10,7 @@ import {
   UseGuards,
   Get,
 } from '@nestjs/common';
-import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 
 import * as R from 'ramda';
@@ -23,14 +23,14 @@ import { User as UserDecorator } from './user.decorator';
 import { UserResponse } from './users.interface';
 import { CreateUserDto, UpdateUserDto } from './dto';
 
-@ApiUseTags('user')
+@ApiTags('user')
 @ApiBearerAuth()
 @Controller()
 export class UsersController {
   constructor(
     private readonly userService: UsersService,
     private readonly authService: AuthService,
-  ) {}
+  ) { }
 
   private async buildUserResponseObject(user: User): Promise<UserResponse> {
     const userWithoutPassword = R.omit(['password'], user);

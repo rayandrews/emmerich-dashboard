@@ -11,12 +11,14 @@ import {
   createAccountAction,
   updateAccountAction,
   deleteAccountAction,
+  getSpecificAccountAction,
 } from './actions';
 import {
   listAccountsService,
   createAccountService,
   updateAccountService,
   deleteAccountService,
+  getSpecificAccountService,
 } from './service';
 
 // 1. List all accounts
@@ -54,7 +56,7 @@ function* handleUpdateAccount() {
 }
 // End of update account entries
 
-// 3. Delete account entries
+// 4. Delete account entries
 function* handleDeleteAccount() {
   yield takeEvery(
     deleteAccountAction.request,
@@ -67,11 +69,25 @@ function* handleDeleteAccount() {
 }
 // End of delete account entries
 
+// 5. Get specific account
+function* handleGetSpecificAccount() {
+  yield takeEvery(
+    getSpecificAccountAction.request,
+    createApi(getSpecificAccountService, getSpecificAccountAction, {
+      showSuccess: true,
+      showFailure: true,
+      // actionCallback: push(routes.accounting.account.list),
+    }),
+  );
+}
+// End of get specific account
+
 export function* saga() {
   yield all([
     fork(handleListAccounts),
     fork(handleCreateAccount),
     fork(handleUpdateAccount),
     fork(handleDeleteAccount),
+    fork(handleGetSpecificAccount),
   ]);
 }
