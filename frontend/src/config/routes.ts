@@ -19,3 +19,5 @@ export const accounting = {
     create: '/accounting/ledgers/create',
   },
 };
+
+export const DEFAULT_ROUTE = accounting.journal.list;

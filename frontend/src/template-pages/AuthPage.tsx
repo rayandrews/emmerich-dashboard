@@ -3,6 +3,9 @@ import React from 'react';
 import { Card, Col, Row } from 'reactstrap';
 
 import { History } from 'history';
+
+import { DEFAULT_ROUTE } from '@/config/routes';
+
 import { AuthForm, STATE_LOGIN, AuthStateType } from '@/components/AuthForm';
 
 export interface AuthPageProps {
@@ -23,7 +26,7 @@ const AuthPage: React.FunctionComponent<AuthPageProps> = ({
   };
 
   const handleLogoClick = () => {
-    history.push('/');
+    history.push(DEFAULT_ROUTE);
   };
 
   return (

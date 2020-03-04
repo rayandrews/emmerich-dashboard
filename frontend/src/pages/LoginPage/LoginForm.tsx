@@ -9,6 +9,8 @@ import { Button, Form } from 'reactstrap';
 import { useForm, FormContext } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
+import { DEFAULT_ROUTE } from '@/config/routes';
+
 import { FormInput } from '@/components/Form';
 import { Logo } from '@/components/Logo';
 
@@ -35,7 +37,7 @@ export const LoginForm: React.FunctionComponent<LoginFormProps> = ({
 
   const onSubmit = data => {
     dispatch(loginAction.request(data));
-    dispatch(push('/'));
+    dispatch(push(DEFAULT_ROUTE));
   };
 
   return (

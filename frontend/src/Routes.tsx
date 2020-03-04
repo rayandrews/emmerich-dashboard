@@ -72,9 +72,9 @@ const UpdateAccountPage = React.lazy(() =>
 // const ButtonPage = React.lazy(() => import('@/template-pages/ButtonPage'));
 // const CardPage = React.lazy(() => import('@/template-pages/CardPage'));
 // const ChartPage = React.lazy(() => import('@/template-pages/ChartPage'));
-const DashboardPage = React.lazy(() =>
-  import('@/template-pages/DashboardPage'),
-);
+// const DashboardPage = React.lazy(() =>
+//   import('@/template-pages/DashboardPage'),
+// );
 // const DropdownPage = React.lazy(() => import('@/template-pages/DropdownPage'));
 // const FormPage = React.lazy(() => import('@/template-pages/FormPage'));
 // const InputGroupPage = React.lazy(() =>
@@ -167,8 +167,8 @@ export const Routes: React.FunctionComponent = () => {
             />
             {/** end of added routes */}
 
-            <ProtectedRoute exact path="/" component={DashboardPage} />
-            {/*<Route exact path="/login-modal" component={AuthModalPage} />
+            {/*<ProtectedRoute exact path="/" component={DashboardPage} />
+            <Route exact path="/login-modal" component={AuthModalPage} />
             <ProtectedRoute exact path="/buttons" component={ButtonPage} />
             <ProtectedRoute exact path="/cards" component={CardPage} />
             <ProtectedRoute exact path="/widgets" component={WidgetPage} />

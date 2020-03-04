@@ -1,5 +1,9 @@
 import { takeEvery, fork, all } from 'redux-saga/effects';
 
+import { push } from 'connected-react-router';
+
+import { DEFAULT_ROUTE } from '@/config/routes';
+
 import { createApi } from '@/utils/sagas/api';
 
 import { createUserAction, createUserWithLoginAction } from './actions';
@@ -42,7 +46,11 @@ function* handleCreateUserRequest() {
 function* watchCreateUserWithLoginRequest() {
   yield takeEvery(
     createUserWithLoginAction.request,
-    createApi(createUserWithLoginService, createUserWithLoginAction),
+    createApi(createUserWithLoginService, createUserWithLoginAction, {
+      showSuccess: false,
+      showFailure: true,
+      actionCallback: push(DEFAULT_ROUTE),
+    }),
   );
 }
 // End create user with login
