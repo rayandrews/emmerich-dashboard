@@ -24,7 +24,6 @@ export const TabLayout: React.FunctionComponent<TabLayoutProps> = ({
   const toggle = tab => {
     if (activeTab !== tab) {
       setActiveTab(tab);
-      console.log(tab);
     }
   };
 

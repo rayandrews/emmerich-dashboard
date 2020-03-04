@@ -1,6 +1,14 @@
 version: '3'
 
 services:
+  nginx-admin:
+    restart: "no"
+  certbot:
+    restart: "no"
+  postgres:
+    restart: "no"
+  redis:
+    restart: "no"
   backend:
     build:
       context: .
@@ -8,7 +16,7 @@ services:
     environment:
       - NODE_ENV=development
       - WAIT_HOSTS=postgres:5432,db_cache:6379
-    restart: always
+    restart: "no"
     command: sh -c 'yarn && /wait && yarn start:dev'
 
   postgres:

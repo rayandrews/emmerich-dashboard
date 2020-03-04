@@ -7,13 +7,13 @@ import { useDispatch } from 'react-redux';
 
 import { Button, Form } from 'reactstrap';
 
-import useForm, { FormContext } from 'react-hook-form';
+import { useForm, FormContext } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { FormInput } from '@/components/Form';
 import { Logo } from '@/components/Logo';
 
-import { createUserWithLoginAction } from '@/reducers/user';
+import { createUserAction } from '@/reducers/user';
 
 import { signupValidation } from './SignupValidation';
 
@@ -35,8 +35,7 @@ export const SignupForm: React.FunctionComponent<SignupFormProps> = ({
   });
 
   const onSubmit = data => {
-    dispatch(createUserWithLoginAction.request(data));
-    dispatch(push('/'));
+    dispatch(createUserAction.request(data));
   };
 
   return (

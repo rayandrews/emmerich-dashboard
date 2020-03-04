@@ -90,12 +90,9 @@ export const Header: React.FunctionComponent = () => {
     dispatch(openSidebar());
   }, [dispatch]);
 
-  const handleCloseSidebar = React.useCallback(
-    () => () => {
-      dispatch(closeSidebar());
-    },
-    [dispatch],
-  );
+  const handleCloseSidebar = React.useCallback(() => {
+    dispatch(closeSidebar());
+  }, [dispatch]);
 
   const [state, setState] = React.useState(initialState);
 

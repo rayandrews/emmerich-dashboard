@@ -1,21 +1,31 @@
 import React from 'react';
 
-interface PaginationState {
-  page: number;
-  limit: number;
+import { CreateQueryParams, QueryFilter } from '@nestjsx/crud-request';
+
+interface IPagination extends CreateQueryParams {
+  pageCount: number;
+  paginationService: (state: CreateQueryParams) => void;
+  triggerRefreshOnChange?: any[];
+  filter?: QueryFilter[];
 }
 
-interface IPagination extends PaginationState {
-  pageCount: number;
-  paginationService: (state: PaginationState) => void;
-}
+const defaultOptions = {
+  page: 1,
+  limit: 10,
+  triggerRefreshOnChange: [],
+  filter: [],
+  pageCount: 0,
+  paginationService: () => {},
+};
 
 export const usePagination = ({
   paginationService,
-  page,
-  limit,
+  page = 1,
+  limit = 10,
   pageCount,
-}: IPagination) => {
+  triggerRefreshOnChange = [],
+  filter = [],
+}: IPagination = defaultOptions) => {
   const [currentPage, setPage] = React.useState(page);
   const [currentLimit, setLimit] = React.useState(limit);
 
@@ -37,8 +47,9 @@ export const usePagination = ({
     paginationService({
       page: currentPage,
       limit: currentLimit,
+      filter,
     });
-  }, [paginationService, currentLimit, currentPage]);
+  }, [paginationService, currentLimit, currentPage, ...triggerRefreshOnChange]);
 
   return {
     currentPage,

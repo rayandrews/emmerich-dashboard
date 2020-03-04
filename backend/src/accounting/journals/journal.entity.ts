@@ -9,7 +9,9 @@ import { TransactionType } from './journal.interface';
 
 @Entity('accounting-journals')
 export class Journal extends BaseEntity {
-  @ManyToOne(type => Transaction, transaction => transaction.journals)
+  @ManyToOne(type => Transaction, transaction => transaction.journals, {
+    onDelete: 'CASCADE'
+  })
   transaction: Transaction;
 
   @Column()
@@ -34,7 +36,9 @@ export class Journal extends BaseEntity {
   })
   memo: string = null;
 
-  @ManyToOne(type => Account, account => account.journals)
+  @ManyToOne(type => Account, account => account.journals, {
+    onDelete: 'CASCADE'
+  })
   account!: Account;
 
   // @Column({

@@ -18,6 +18,9 @@ import { AccountsService } from './accounts.service';
   },
   query: {
     join: {
+      ledger: {
+        eager: true,
+      },
       parent: {
         eager: true,
         persist: ['id'],
@@ -30,13 +33,10 @@ import { AccountsService } from './accounts.service';
       },
     ],
   },
-  routes: {
-    exclude: ['createManyBase'],
-  },
 })
 @Controller()
 export class AccountsController implements CrudController<Account> {
-  constructor(public readonly service: AccountsService) {}
+  constructor(public readonly service: AccountsService) { }
 
   get base(): CrudController<Account> {
     return this;
@@ -45,25 +45,19 @@ export class AccountsController implements CrudController<Account> {
   @UseGuards(AuthGuard('jwt'))
   @Override('getManyBase')
   getMany(@ParsedRequest() req: CrudRequest) {
-    return this.service.getAllAccounts(req);
+    return this.service.findAll(req);
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Get('/tree')
+  @Get('/parent')
   getTrees(@ParsedRequest() req: CrudRequest) {
-    return this.service.findAllAccounts();
-  }
-
-  @UseGuards(AuthGuard('jwt'))
-  @Override('createOneBase')
-  createOne(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Account) {
-    return this.base.createOneBase(req, dto);
+    return this.service.findParents(req);
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Override('getOneBase')
   getOne(@ParsedRequest() req: CrudRequest) {
-    return this.base.getOneBase(req);
+    return this.service.findOneAccount(req);
   }
 
   @UseGuards(AuthGuard('jwt'))

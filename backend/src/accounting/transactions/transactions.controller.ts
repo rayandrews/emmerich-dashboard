@@ -8,7 +8,9 @@ import {
   ParsedBody,
 } from '@nestjsx/crud';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiUseTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
+
+import { JournalItemPayload } from '@/accounting/journals/journal.interface';
 
 import { Transaction } from './transaction.entity';
 
@@ -19,7 +21,7 @@ import { TransactionsService } from './transactions.service';
     type: Transaction,
   },
   routes: {
-    exclude: ['createOneBase', 'createManyBase'],
+    exclude: ['createManyBase'],
   },
   query: {
     join: {
@@ -27,16 +29,28 @@ import { TransactionsService } from './transactions.service';
         eager: true,
         persist: ['id'],
       },
+      'journals.account': {
+        eager: true,
+        persist: ['id', 'name', 'type'],
+        exclude: ['currency', 'createdAt', 'updatedAt'],
+      },
     },
   },
 })
-@ApiUseTags('journals')
+@ApiTags('journals')
 @Controller()
 export class TransactionsController implements CrudController<Transaction> {
-  constructor(public readonly service: TransactionsService) {}
+  constructor(public readonly service: TransactionsService) { }
 
   private get base(): CrudController<Transaction> {
     return this;
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Override('createOneBase')
+  @Post()
+  async create(@ParsedRequest() req: CrudRequest, @ParsedBody() journalItems: JournalItemPayload[]) {
+    return await this.service.addTransaction(journalItems);
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -55,7 +69,7 @@ export class TransactionsController implements CrudController<Transaction> {
   @UseGuards(AuthGuard('jwt'))
   @Override('updateOneBase')
   updateOne(@ParsedRequest() req: CrudRequest, @ParsedBody() dto: Transaction) {
-    return this.base.updateOneBase(req, dto);
+    return this.service.updateTransaction(req, dto);
   }
 
   @UseGuards(AuthGuard('jwt'))

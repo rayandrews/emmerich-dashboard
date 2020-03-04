@@ -11,7 +11,7 @@ import { Length } from 'class-validator';
 import { BaseEntity } from '@/shared/entity/base.entity';
 import { Journal } from '@/accounting/journals/journal.entity';
 
-export enum LedgerType {
+export enum AccountType {
   ASSET = 'asset',
   LIABILITY = 'liability',
   EQUITY = 'equity',
@@ -48,13 +48,13 @@ export class Account extends BaseEntity {
 
   @Column({
     type: 'enum',
-    enum: LedgerType,
-    default: LedgerType.ASSET,
+    enum: AccountType,
+    default: AccountType.ASSET,
   })
-  type: LedgerType;
+  type: AccountType;
 
   @OneToMany(type => Journal, journal => journal.account, {
-    eager: true,
+    eager: false,
   })
   journals: Journal[];
 

@@ -1,15 +1,15 @@
 import { IsEmail, Length } from 'class-validator';
-import { ApiModelProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class UpdateUserDto {
-  @ApiModelProperty()
+  @ApiProperty()
   readonly username: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @IsEmail()
   readonly email: string;
 
-  @ApiModelProperty()
+  @ApiProperty()
   @Length(6, 10)
   readonly password: string;
 }

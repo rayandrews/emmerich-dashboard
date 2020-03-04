@@ -1,58 +1,50 @@
 {
-  "ledger": {
-    "create": {
-      "name": {
-        "label": "Name",
-        "placeholder": "Asset"
-      },
-      "type": {
-        "label": "Type of Ledger",
-        "placeholder": "Asset"
-      }
-    }
-  },
   "account": {
-    "create": {
-      "name": {
-        "label": "Name",
-        "placeholder": "Lab Asset"
-      },
-      "ledger": {
-        "label": "Ledger",
-        "placeholder": "Ledger"
-      },
-      "startingBalance": {
-        "label": "Starting Balance",
-        "placeholder": "1000"
-      },
-      "parent": {
-        "label": "Parent",
-        "placeholder": "Asset"
-      }
+    "name": {
+      "label": "Name",
+      "placeholder": "Lab Asset"
+    },
+    "type": {
+      "label": "Type",
+      "placeholder": "Asset"
+    },
+    "balance": {
+      "label": "Balance",
+      "placeholder": "1000"
+    },
+    "startingCredit": {
+      "label": "Starting Credit",
+      "placeholder": "1000"
+    },
+    "startingDebit": {
+      "label": "Starting Debit",
+      "placeholder": "1000"
+    },
+    "parent": {
+      "label": "Parent",
+      "placeholder": "Parent"
     }
   },
   "journal": {
-    "create": {
-      "account": {
-        "label": "Account",
-        "placeholder": "Ledger"
-      },
-      "description": {
-        "label": "Description",
-        "placeholder": "Office Tools"
-      },
-      "currency": {
-        "label": "Currency",
-        "placeholder": "IDR"
-      },
-      "debit": {
-        "label": "Debit",
-        "placeholder": "100000"
-      },
-      "credit": {
-        "label": "Credit",
-        "placeholder": "100000"
-      }
+    "account": {
+      "label": "Account",
+      "placeholder": "Ledger"
+    },
+    "description": {
+      "label": "Description",
+      "placeholder": "Office Tools"
+    },
+    "currency": {
+      "label": "Currency",
+      "placeholder": "IDR"
+    },
+    "debit": {
+      "label": "Debit",
+      "placeholder": "100000"
+    },
+    "credit": {
+      "label": "Credit",
+      "placeholder": "100000"
     }
   }
 }

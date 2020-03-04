@@ -5,9 +5,7 @@ import { createBrowserHistory } from 'history';
 import { App } from '@/App';
 import * as serviceWorker from '@/serviceWorker';
 import { configureStore } from '@/configureStore';
-import { ApplicationState } from '@/reducers';
 import { initializeRequest } from '@/utils/request';
-import { loadState, saveState } from '@/utils/persist';
 import '@/utils/i18n';
 
 // configuring store
@@ -19,17 +17,23 @@ const history = createBrowserHistory({
   basename: getBasename(),
 });
 
-const initialState = loadState<ApplicationState>();
+// const initialState = loadState<ApplicationState>();
 
-const { store, persistor } = configureStore(history, initialState);
+const { store, persistor } = configureStore(history);
 initializeRequest(store);
 
-ReactDOM.render(
-  <App store={store} history={history} persistor={persistor} />,
-  document.getElementById('root'),
-);
+const render = (Component: any) => {
+  return ReactDOM.render(Component, document.getElementById('root'));
+};
 
-store.subscribe(() => console.log(store.getState()));
+render(<App store={store} history={history} persistor={persistor} />);
+
+if (module.hot) {
+  module.hot.accept('@/App', () => {
+    const { App: NextApp } = require('@/App');
+    render(<NextApp store={store} history={history} persistor={persistor} />);
+  });
+}
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

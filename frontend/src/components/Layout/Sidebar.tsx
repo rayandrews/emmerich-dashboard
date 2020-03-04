@@ -2,12 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import {
-  MdDashboard,
-  MdKeyboardArrowDown,
-  MdSend,
-  MdTextFields,
-} from 'react-icons/md';
+import { MdKeyboardArrowDown, MdSend, MdTextFields } from 'react-icons/md';
 import { IconType } from 'react-icons/lib/cjs';
 import {
   Collapse,
@@ -43,7 +38,7 @@ export interface INavItem {
 }
 
 const navItems: INavItem[] = [
-  { to: '/', name: 'dashboard', exact: true, Icon: MdDashboard },
+  // { to: '/', name: 'dashboard', exact: true, Icon: MdDashboard },
   {
     name: 'accounting',
     Icon: MdSend,

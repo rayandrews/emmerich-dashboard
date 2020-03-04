@@ -20,7 +20,10 @@ export const createJournalValidation = Yup.object()
       Yup.object()
         .shape(
           {
-            account: Yup.number(),
+            account: Yup.object().shape({
+              label: Yup.string(),
+              value: Yup.string(),
+            }),
             currency: Yup.string(),
             // amount: Yup.number(),
             credit: Yup.number().when('debit', {

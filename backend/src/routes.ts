@@ -28,7 +28,6 @@ export const routes: IRoutes = [
     children: [
       { path: '/accounts', module: AccountsModule },
       { path: '/transactions', module: TransactionsModule },
-      { path: '/journals', module: JournalsModule },
     ],
   },
 ];

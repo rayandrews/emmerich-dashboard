@@ -1,28 +1,26 @@
 import React from 'react';
 
-import * as R from 'ramda';
+import { useDispatch } from 'react-redux';
 
-import { useDispatch, useSelector } from 'react-redux';
-
-import useForm, { FormContext } from 'react-hook-form';
+import { useForm, FormContext } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { Button, Form } from 'reactstrap';
 
-import { ApplicationState } from '@/reducers';
+import * as R from 'ramda';
+
 import {
-  getListOfLedgersFromAccounting,
-  getListOfAccountsFromAccounting,
-} from '@/reducers/accounting';
-import { IListLedgersState } from '@/reducers/accounting/ledgers';
-import {
-  IListAccountsState,
+  Account,
   createAccountAction,
+  AccountType,
+  listAccountsService,
 } from '@/reducers/accounting/accounts';
 
-import { capitalize } from '@/utils/string';
+import { FormInput, AsyncSelect } from '@/components/Form';
 
-import { FormInput } from '@/components/Form';
+import { useSearch } from '@/hooks/useSearch';
+
+import { capitalize } from '@/utils/string';
 
 import { createAccountValidation } from './CreateAccountValidation';
 
@@ -34,15 +32,10 @@ export const CreateAccountForm: React.FunctionComponent<CreateAccountFormProps> 
   const dispatch = useDispatch();
   const { t } = useTranslation('accounting');
 
-  const listLedgersFetched = useSelector((state: ApplicationState) =>
-    getListOfLedgersFromAccounting(state.accounting),
-  ) as IListLedgersState;
-
-  const listAccountsFetched = useSelector((state: ApplicationState) =>
-    getListOfAccountsFromAccounting(state.accounting),
-  ) as IListAccountsState;
-
-  const listAccounts = [{ id: '', name: 'No Parent' }, ...listAccountsFetched];
+  const { setInputText, search } = useSearch({
+    field: 'name',
+    service: listAccountsService,
+  });
 
   const formContext = useForm({
     validationSchema: createAccountValidation,
@@ -51,7 +44,9 @@ export const CreateAccountForm: React.FunctionComponent<CreateAccountFormProps> 
     },
   });
 
-  const watchParent = formContext.watch('parent', '' as any);
+  const onParentChange = (newValue, actionMeta) => {
+    formContext.setValue('parent', newValue.value);
+  };
 
   const onSubmit = _data => {
     if (!_data) return;
@@ -61,11 +56,30 @@ export const CreateAccountForm: React.FunctionComponent<CreateAccountFormProps> 
       createAccountAction.request({
         ...rest,
         parent: {
-          id: R.isEmpty(parent) ? undefined : Number(parent),
+          id: R.isEmpty(parent) ? null : Number(parent),
         },
       }),
     );
-    // dispatch(push('/'));
+  };
+
+  const defaultAccountEntry = { value: '', label: 'No Parent' };
+
+  const searchAccount = (inputValue: string) => {
+    setInputText(inputValue);
+
+    return new Promise(resolve => {
+      if (R.is(Array, search.result)) {
+        resolve([
+          defaultAccountEntry,
+          ...(search.result as Account[]).map(account => ({
+            value: String(account.id),
+            label: account.name,
+          })),
+        ]);
+      } else {
+        resolve([defaultAccountEntry]);
+      }
+    });
   };
 
   return (
@@ -74,54 +88,47 @@ export const CreateAccountForm: React.FunctionComponent<CreateAccountFormProps> 
         <FormInput
           name="name"
           type="text"
-          label={t('account.create.name.label')}
-          placeholder={t('account.create.name.placeholder')}
+          label={t('account.name.label')}
+          placeholder={t('account.name.placeholder')}
         />
         <FormInput
-          name="startingBalance"
+          name="startingDebit"
           type="number"
-          label={t('account.create.startingBalance.label')}
-          placeholder={t('account.create.startingBalance.placeholder')}
+          label={t('account.startingDebit.label')}
+          placeholder={t('account.startingDebit.placeholder')}
         />
         <FormInput
-          name="ledger"
+          name="startingCredit"
+          type="number"
+          label={t('account.startingCredit.label')}
+          placeholder={t('account.startingCredit.placeholder')}
+        />
+        <FormInput
+          name="type"
           type="select"
-          label={t('account.create.ledger.label')}
-          placeholder={t('account.create.ledger.placeholder')}
+          label={t('account.type.label')}
+          placeholder={t('account.type.placeholder')}
         >
-          {listLedgersFetched.map(ledger => (
-            <option key={`${ledger.id} - ${ledger.name}`} value={ledger.id}>
-              {capitalize(ledger.name)}
+          {Object.values(AccountType).map((accountType, idx) => (
+            <option key={accountType} value={accountType}>
+              {capitalize(accountType)}
             </option>
           ))}
         </FormInput>
-        {/* <FormInput
+        <AsyncSelect
           name="parent"
-          type="number"
-          label={t('account.create.parent.label')}
-          placeholder={t('account.create.parent.placeholder')}
-          defaultValue={watchParent}
-        /> */}
-        <FormInput
-          type="select"
-          name="parent"
-          label={t('account.create.parent.label')}
-          placeholder={t('account.create.parent.placeholder')}
-          value={watchParent}
-          // value={watchCurrency}
-          // onChange={event =>
-          //   formContext.setValue(
-          //     'currency',
-          //     event.target.value,
-          //   )
-          // }
-        >
-          {listAccounts.map(account => (
-            <option key={`${account.id} - ${account.name}`} value={account.id}>
-              {capitalize(account.name)}
-            </option>
-          ))}
-        </FormInput>
+          className="basic-single"
+          classNamePrefix="select"
+          label={t('account.parent.label')}
+          placeholder={t('account.parent.placeholder')}
+          onChange={onParentChange}
+          isSearchable
+          isLoading={search.loading}
+          loadOptions={searchAccount}
+          cacheOptions
+          defaultOptions
+          onInputChange={setInputText}
+        />
         <hr />
         <Button
           size="lg"

@@ -34,6 +34,10 @@ const CreateJournalPage = React.lazy(() =>
   import('@/pages/Accounting/Journal/CreateJournal'),
 );
 
+const UpdateJournalPage = React.lazy(() =>
+  import('@/pages/Accounting/Journal/UpdateJournal'),
+);
+
 // 2.  Accounts
 const ListAccountsPage = React.lazy(() =>
   import('@/pages/Accounting/Account/ListAccounts'),
@@ -41,6 +45,10 @@ const ListAccountsPage = React.lazy(() =>
 
 const CreateAccountPage = React.lazy(() =>
   import('@/pages/Accounting/Account/CreateAccount'),
+);
+
+const UpdateAccountPage = React.lazy(() =>
+  import('@/pages/Accounting/Account/UpdateAccount'),
 );
 
 // 3.  Ledgers
@@ -64,9 +72,9 @@ const CreateAccountPage = React.lazy(() =>
 // const ButtonPage = React.lazy(() => import('@/template-pages/ButtonPage'));
 // const CardPage = React.lazy(() => import('@/template-pages/CardPage'));
 // const ChartPage = React.lazy(() => import('@/template-pages/ChartPage'));
-const DashboardPage = React.lazy(() =>
-  import('@/template-pages/DashboardPage'),
-);
+// const DashboardPage = React.lazy(() =>
+//   import('@/template-pages/DashboardPage'),
+// );
 // const DropdownPage = React.lazy(() => import('@/template-pages/DropdownPage'));
 // const FormPage = React.lazy(() => import('@/template-pages/FormPage'));
 // const InputGroupPage = React.lazy(() =>
@@ -136,6 +144,11 @@ export const Routes: React.FunctionComponent = () => {
               path={routes.accounting.account.create}
               component={CreateAccountPage}
             />
+            <ProtectedRoute
+              exact
+              path={routes.accounting.account.update}
+              component={UpdateAccountPage}
+            />
             {/** 1.3. Journal Modules */}
             <ProtectedRoute
               exact
@@ -147,10 +160,15 @@ export const Routes: React.FunctionComponent = () => {
               path={routes.accounting.journal.create}
               component={CreateJournalPage}
             />
+            <ProtectedRoute
+              exact
+              path={routes.accounting.journal.update}
+              component={UpdateJournalPage}
+            />
             {/** end of added routes */}
 
-            <ProtectedRoute exact path="/" component={DashboardPage} />
-            {/*<Route exact path="/login-modal" component={AuthModalPage} />
+            {/*<ProtectedRoute exact path="/" component={DashboardPage} />
+            <Route exact path="/login-modal" component={AuthModalPage} />
             <ProtectedRoute exact path="/buttons" component={ButtonPage} />
             <ProtectedRoute exact path="/cards" component={CardPage} />
             <ProtectedRoute exact path="/widgets" component={WidgetPage} />

@@ -13,6 +13,7 @@ export class Transaction extends BaseEntity {
 
   @OneToMany(type => Journal, journal => journal.transaction, {
     eager: true,
+    onDelete: 'CASCADE'
   })
   journals: Journal[];
 }

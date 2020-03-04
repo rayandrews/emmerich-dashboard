@@ -1,7 +1,7 @@
 import { createStore, Store, applyMiddleware } from 'redux';
 import { History } from 'history';
 
-import { setAutoFreeze } from 'immer';
+// import { setAutoFreeze } from 'immer';
 
 // additional enhancers
 import { composeWithDevTools } from 'redux-devtools-extension';
@@ -17,7 +17,7 @@ import {
   createRootSaga,
 } from '@/reducers';
 
-setAutoFreeze(false);
+// setAutoFreeze(false);
 
 export interface ConfigureStore {
   store: Store<ApplicationState>;
@@ -26,7 +26,7 @@ export interface ConfigureStore {
 
 export function configureStore(
   history: History,
-  initialState: ApplicationState | undefined,
+  initialState: ApplicationState | undefined = undefined,
 ): ConfigureStore {
   // create the composing function for our middlewares
   const composeEnhancers = composeWithDevTools({
@@ -53,6 +53,12 @@ export function configureStore(
   const persistor = persistStore(store);
 
   sagaMiddleware.run(createRootSaga());
+
+  if (process.env.NODE_ENV !== 'production' && module.hot) {
+    module.hot.accept('@/reducers', () =>
+      store.replaceReducer(createRootReducer(history)),
+    );
+  }
 
   return { store, persistor };
 }

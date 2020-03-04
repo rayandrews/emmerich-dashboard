@@ -3,7 +3,7 @@ import PropTypes from '@/utils/propTypes';
 
 import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
 
-import useForm, { FormContext } from 'react-hook-form';
+import { useForm, FormContext } from 'react-hook-form';
 
 import logo200Image from '@/assets/img/logo/logo_200.png';
 
