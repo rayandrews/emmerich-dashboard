@@ -1,17 +1,27 @@
 version: '3'
 
 services:
-  nginx-admin:
+  nginx:
     restart: "no"
-  certbot:
-    restart: "no"
+  # certbot:
+  #   restart: "no"
   postgres:
     restart: "no"
   redis:
     restart: "no"
+  frontend:
+    ports:
+      - 3000:3000
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    environment:
+      - NODE_ENV=development
+    restart: "no"
+    command: sh -c 'yarn && yarn start'
   backend:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile.dev
     environment:
       - NODE_ENV=development

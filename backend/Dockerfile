@@ -25,6 +25,8 @@ RUN yarn
 # Copy app source to container
 COPY . /opt/backend
 
+RUN yarn prestart:prod
+  
 EXPOSE 3000
 
-CMD ["sh", "-c", "/wait && yarn start:prod"]
+# CMD ["sh", "-c", "/wait && yarn start:prod"]

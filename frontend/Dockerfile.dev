@@ -5,15 +5,11 @@ RUN apk --no-cache --virtual add \
     python3 \
     make \
     g++
-  
-# wait for other services
-ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.5.1/wait /wait
-RUN chmod +x /wait
 
 RUN python --version
 
 # Create app directory and set as working directory
-RUN mkdir -p /opt/backend
-WORKDIR /opt/backend
-
+RUN mkdir -p /opt/frontend
+WORKDIR /opt/frontend
+  
 EXPOSE 3000
