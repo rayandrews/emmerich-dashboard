@@ -20,7 +20,7 @@
     "i18next": "^19.0.0",
     "i18next-browser-languagedetector": "^4.0.1",
     "i18next-xhr-backend": "^3.2.2",
-    "immer": "^5.0.0",
+    "immer": "^8.0.1",
     "io-ts": "^2.0.1",
     "nanoid": "^2.1.6",
     "normalizr": "^3.4.1",
